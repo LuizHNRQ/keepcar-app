@@ -1,13 +1,21 @@
 import React, { createContext, ReactPortal, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as auth from "../requests/auth";
-import { AuthValues } from "../requests/auth";
+import { AuthResponse, AuthValues } from "../requests/auth";
+import { Alert } from "react-native";
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: string;
+}
 
 interface AuthContextData {
   signed: boolean;
-  user: object | null;
-  signIn(data: AuthValues): Promise<void>;
+  user: User | null;
   signOut(): void;
+  signIn: (values: AuthValues) => Promise<void>;
   loading: boolean;
 }
 
@@ -16,7 +24,8 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<object | null>({});
+  const [user, setUser] = useState<User | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,15 +42,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setLoading(false);
   }
 
-  async function signIn(data: AuthValues) {
-    const response = await auth.signIn(data);
-    if (!response) {
-      return;
-    }
-    setUser(response.user);
+  async function signIn(values: AuthValues) {
+    const data = await auth.signIn(values);
 
-    await AsyncStorage.setItem("@RNAuth:user", JSON.stringify(response.user));
-    await AsyncStorage.setItem("@RNAuth:token", response.access_token);
+    if (!data) {
+      return Alert.alert("ERRO", "deu erro");
+    }
+
+    const userFormated: User = {
+      id: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      createdAt: data.user.createdAt,
+    };
+
+    setUser(userFormated);
+
+    await AsyncStorage.setItem("@RNAuth:user", JSON.stringify(userFormated));
+    await AsyncStorage.setItem("@RNAuth:token", data.access_token);
   }
 
   async function signOut() {

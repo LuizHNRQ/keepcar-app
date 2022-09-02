@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { api } from "..";
 
 export type AuthResponse = {
@@ -23,14 +24,24 @@ interface Response {
   };
 }
 
-export async function signIn(
-  data: AuthValues
-): Promise<AuthResponse | undefined> {
-  try {
-    const response = await api.post<AuthResponse>("/authenticate", data);
+// export async function signIn(data: AuthValues): Promise<AuthResponse> {
+//   try {
+//     const response = await api.post<AuthResponse>("/authenticate", data);
 
-    return response.data;
+//     return response.data;
+//   } catch (error) {
+//     console.log("Erro 4432", error);
+//   }
+// }
+
+export const signIn = async (values: AuthValues) => {
+  try {
+    const { data } = await api.post<AuthValues, AxiosResponse<AuthResponse>>(
+      "/authenticate",
+      values
+    );
+    return data;
   } catch (error) {
-    console.log("Erro 4432", error);
+    console.log("error 1233", error);
   }
-}
+};

@@ -12,26 +12,19 @@ const Login = ({ navigation }: any): JSX.Element => {
   const { signed, signIn, loading } = useContext(AuthContext);
 
   const {
-    register,
-    setValue,
-    handleSubmit,
     control,
-    reset,
+    handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "luiz@test.com",
+      password: "101010",
     },
   });
+
   const onSubmit = async (data: FormData) => {
     console.log("enviado_>", data);
-
-    const response = await signIn(data);
-    console.log(response);
-
-    // useAppDispatch(authUser({ email: data.email, password: data.password }));
-    //await authUser({ postAuth, values: data });
+    await signIn(data);
   };
 
   console.log("errors", errors);
