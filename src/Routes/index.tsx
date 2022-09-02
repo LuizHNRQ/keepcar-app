@@ -1,25 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import Auth from "./auth";
 import Logged from "./logged";
+import AuthContext, { AuthProvider } from "../contexts/auth";
 
-type Routes = {
-  isAuthenticated: boolean;
-};
+const Routes = () => {
+  const { signed } = useContext(AuthContext);
 
-const Routes = ({ isAuthenticated }: Routes) => {
-  return (
-    <NavigationContainer>
-      {isAuthenticated ? (
-        <Logged />
-      ) : (
-        // Auth screens
-        <Auth />
-      )}
-      {/* Common modal screens */}
-    </NavigationContainer>
-  );
+  return signed ? <Logged /> : <Auth />;
 };
 
 export default Routes;

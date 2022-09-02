@@ -1,11 +1,7 @@
-import useAxios from "axios-hooks";
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
-import { userLogin } from "../../reduxStore/user/action";
-import { AnyAction } from "@reduxjs/toolkit";
-// import { authUser } from "../../requests/auth";
+import AuthContext from "../../contexts/auth";
 
 type FormData = {
   email: string;
@@ -13,7 +9,7 @@ type FormData = {
 };
 
 const Login = ({ navigation }: any): JSX.Element => {
-  const dispatch = useDispatch();
+  const { signed, signIn, loading } = useContext(AuthContext);
 
   const {
     register,
@@ -30,7 +26,10 @@ const Login = ({ navigation }: any): JSX.Element => {
   });
   const onSubmit = async (data: FormData) => {
     console.log("enviado_>", data);
-    dispatch(userLogin(data) as unknown as AnyAction);
+
+    const response = await signIn(data);
+    console.log(response);
+
     // useAppDispatch(authUser({ email: data.email, password: data.password }));
     //await authUser({ postAuth, values: data });
   };
@@ -74,6 +73,7 @@ const Login = ({ navigation }: any): JSX.Element => {
         <Button
           title={false ? "Carregando..." : "Login"}
           onPress={handleSubmit(onSubmit)}
+          disabled={loading}
         />
       </View>
       {/* <View>{JSON.stringify(user) ?? "teste"}</View> */}

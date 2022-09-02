@@ -1,6 +1,6 @@
+import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { Provider } from "react-redux";
-import store from "./reduxStore";
+import AuthContext, { AuthProvider } from "./contexts/auth";
 
 import Routes from "./Routes";
 
@@ -8,8 +8,10 @@ export default function App() {
   const isLoggedIn = false;
 
   return (
-    <Provider store={store}>
-      <Routes isAuthenticated={isLoggedIn} />
-    </Provider>
+    <NavigationContainer>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </NavigationContainer>
   );
 }
