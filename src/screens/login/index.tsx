@@ -1,8 +1,11 @@
 import useAxios from "axios-hooks";
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
-import { authUser } from "../../requests/auth";
+import { userLogin } from "../../reduxStore/user/action";
+import { AnyAction } from "@reduxjs/toolkit";
+// import { authUser } from "../../requests/auth";
 
 type FormData = {
   email: string;
@@ -10,6 +13,8 @@ type FormData = {
 };
 
 const Login = ({ navigation }: any): JSX.Element => {
+  const dispatch = useDispatch();
+
   const {
     register,
     setValue,
@@ -25,20 +30,12 @@ const Login = ({ navigation }: any): JSX.Element => {
   });
   const onSubmit = async (data: FormData) => {
     console.log("enviado_>", data);
-    await authUser({ postAuth, values: data });
+    dispatch(userLogin(data) as unknown as AnyAction);
+    // useAppDispatch(authUser({ email: data.email, password: data.password }));
+    //await authUser({ postAuth, values: data });
   };
 
-  const API_URL = "http://127.0.0.1:3333";
-
   console.log("errors", errors);
-
-  const [{ loading: loadingAuth }, postAuth] = useAxios(
-    {
-      method: "POST",
-      url: `${API_URL}/authenticate`,
-    },
-    { manual: true }
-  );
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -75,10 +72,11 @@ const Login = ({ navigation }: any): JSX.Element => {
 
       <View style={styles.button}>
         <Button
-          title={loadingAuth ? "Carregando..." : "Login"}
+          title={false ? "Carregando..." : "Login"}
           onPress={handleSubmit(onSubmit)}
         />
       </View>
+      {/* <View>{JSON.stringify(user) ?? "teste"}</View> */}
 
       <Button
         title="Go to Register"
