@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 
 import Auth from "./auth";
 import Logged from "./logged";
-import AuthContext from "../contexts/auth";
+import { useAuth } from "../contexts/auth";
 
 const Routes = () => {
-  const { signed } = useContext(AuthContext);
+  const { signed } = useAuth();
 
   return signed ? <Logged /> : <Auth />;
 };

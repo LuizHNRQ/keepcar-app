@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View, Text, Button, TextInput, StyleSheet } from "react-native";
-import AuthContext from "../../contexts/auth";
+import { useAuth } from "../../contexts/auth";
 
 type FormData = {
   email: string;
@@ -9,7 +9,7 @@ type FormData = {
 };
 
 const Login = ({ navigation }: any): JSX.Element => {
-  const { signed, signIn, loading } = useContext(AuthContext);
+  const { signed, signIn, loading } = useAuth();
 
   const {
     control,
