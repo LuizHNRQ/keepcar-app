@@ -1,17 +1,89 @@
 import React from "react";
-import { View } from "react-native";
-import Dashboard from "../screens/dashboard";
-import Profile from "../screens/Profile";
+import { Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import { Container } from './styles';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+
+import Dashboard from "../screens/dashboard";
+import Garage from "../screens/Garage";
+import Profile from "../screens/Profile";
 
 const Logged: React.FC = () => {
   const Tab = createBottomTabNavigator();
+  const insets = useSafeAreaInsets();
 
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Dashboard" component={Dashboard} />
-      <Tab.Screen name="Profile" component={Profile} />
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: { height: 55 + insets.bottom },
+      }}
+    >
+      <Tab.Screen
+        name="Events"
+        component={Dashboard}
+        options={{
+          title: "Últimos Eventos",
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text style={{ color: focused ? "#473198" : "grey" }}>
+                Eventos
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="event-note"
+              size={26}
+              color={focused ? "#473198" : "grey"}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Garage"
+        component={Garage}
+        options={{
+          title: "Minha Garagem",
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text style={{ color: focused ? "#473198" : "grey" }}>
+                Garagem
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => (
+            <MaterialCommunityIcons
+              name="garage-variant"
+              size={30}
+              color={focused ? "#473198" : "grey"}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: "Meu Perfil",
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text style={{ color: focused ? "#473198" : "grey" }}>
+                Perfil
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome
+              name="user-circle-o"
+              size={24}
+              color={focused ? "#473198" : "grey"}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };

@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { NavigationContainer } from "@react-navigation/native";
 
 import Auth from "./auth";
 import Logged from "./logged";
-import AuthContext, { AuthProvider } from "../contexts/auth";
+import AuthContext from "../contexts/auth";
 
 const Routes = () => {
   const { signed } = useContext(AuthContext);

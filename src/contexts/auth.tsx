@@ -1,4 +1,10 @@
-import React, { createContext, ReactPortal, useEffect, useState } from "react";
+import React, {
+  createContext,
+  ReactPortal,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as auth from "../requests/auth";
 import { AuthResponse, AuthValues } from "../requests/auth";
@@ -75,5 +81,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     </AuthContext.Provider>
   );
 };
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  return context;
+}
 
 export default AuthContext;
