@@ -1,18 +1,19 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import AuthContext, { AuthProvider } from "./contexts/auth";
+import { AuthProvider } from "./contexts/auth";
+import { VehicleProvider } from "./contexts/vehicles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import Routes from "./Routes";
 
 export default function App() {
-  const isLoggedIn = false;
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <AuthProvider>
-          <Routes />
+          <VehicleProvider>
+            <Routes />
+          </VehicleProvider>
         </AuthProvider>
       </NavigationContainer>
     </SafeAreaProvider>

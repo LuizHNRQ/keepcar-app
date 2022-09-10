@@ -9,11 +9,30 @@ import { FontAwesome } from "@expo/vector-icons";
 
 import Dashboard from "../screens/dashboard";
 import Garage from "../screens/Garage";
+import Vehicle from "../screens/Vehicle";
 import Profile from "../screens/Profile";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Logged: React.FC = () => {
   const Tab = createBottomTabNavigator();
   const insets = useSafeAreaInsets();
+
+  const HomeStack = createNativeStackNavigator();
+
+  function VehicleStackScreen() {
+    return (
+      <HomeStack.Navigator>
+        <HomeStack.Screen
+          name="Garage"
+          component={Garage}
+          options={{
+            title: "Garagem",
+          }}
+        />
+        <HomeStack.Screen name="Vehicle" component={Vehicle} />
+      </HomeStack.Navigator>
+    );
+  }
 
   return (
     <Tab.Navigator
@@ -43,10 +62,10 @@ const Logged: React.FC = () => {
         }}
       />
       <Tab.Screen
-        name="Garage"
-        component={Garage}
+        name="GarageStack"
+        component={VehicleStackScreen}
         options={{
-          title: "Minha Garagem",
+          headerShown: false,
           tabBarLabel: ({ focused }) => {
             return (
               <Text style={{ color: focused ? "#473198" : "grey" }}>
@@ -62,6 +81,23 @@ const Logged: React.FC = () => {
             />
           ),
         }}
+        // options={{
+        //   title: "Minha Garagem",
+        //   tabBarLabel: ({ focused }) => {
+        //     return (
+        //       <Text style={{ color: focused ? "#473198" : "grey" }}>
+        //         Garagem
+        //       </Text>
+        //     );
+        //   },
+        //   tabBarIcon: ({ focused }) => (
+        //     <MaterialCommunityIcons
+        //       name="garage-variant"
+        //       size={30}
+        //       color={focused ? "#473198" : "grey"}
+        //     />
+        //   ),
+        // }}
       />
       <Tab.Screen
         name="Profile"

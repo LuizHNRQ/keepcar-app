@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as auth from "../requests/auth";
 import { AuthResponse, AuthValues } from "../requests/auth";
 import { Alert } from "react-native";
+import { api } from "../requests";
 
 interface User {
   id: number;
@@ -36,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     loadStorageData();
-  });
+  }, []);
 
   async function loadStorageData() {
     const storagedUser = await AsyncStorage.getItem("@RNAuth:user");
@@ -44,7 +45,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (storagedUser && storagedToken) {
       setUser(JSON.parse(storagedUser));
+      api.defaults.headers.common = {
+        Authorization: `bearer ${storagedToken}`,
+      };
     }
+
     setLoading(false);
   }
 
@@ -63,6 +68,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     setUser(userFormated);
+
+    api.defaults.headers.common = {
+      Authorization: `bearer ${data.access_token}`,
+    };
 
     await AsyncStorage.setItem("@RNAuth:user", JSON.stringify(userFormated));
     await AsyncStorage.setItem("@RNAuth:token", data.access_token);
