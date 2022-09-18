@@ -12,3 +12,14 @@ export const fetchVehicles = async (userId: number) => {
     console.log("error 1233", error);
   }
 };
+
+export const fetchVehicleById = async (vehicleId: string) => {
+  try {
+    const { data } = await api.get<Vehicle>(`/vehicle/${vehicleId}`);
+    console.log("passou aqui vehicles", data);
+
+    return data;
+  } catch (error) {
+    console.log("error 1233", error);
+  }
+};

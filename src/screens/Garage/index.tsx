@@ -33,9 +33,11 @@ const Dashboard: React.FC = ({ navigation }: any) => {
     console.log("pesquisa");
   };
 
-  const handleShowVehicleDetails = () => {
-    console.log("Detalhes");
-    navigation.navigate("Vehicle");
+  const handleShowVehicleDetails = (vehicleID: string) => {
+    console.log("Detalhes", vehicleID);
+    navigation.navigate("Vehicle", {
+      vehicleId: vehicleID,
+    });
   };
 
   const Item = ({ vehicle }: Data) => {
@@ -58,7 +60,10 @@ const Dashboard: React.FC = ({ navigation }: any) => {
         <View style={styles.fowardButtonView}>
           <TouchableOpacity
             style={styles.forwardButton}
-            onPress={handleShowVehicleDetails}
+            onPress={() => {
+              console.log("id do vehicles", vehicle.id);
+              handleShowVehicleDetails(vehicle.id);
+            }}
           >
             <Entypo name="chevron-thin-right" size={24} color="black" />
           </TouchableOpacity>

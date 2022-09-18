@@ -10,6 +10,16 @@ import * as vehicle from "../requests/vehicles";
 import { Alert } from "react-native";
 import { useAuth } from "./auth";
 
+export interface EventRecord {
+  id: number;
+  title: string;
+  km: number;
+  description: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Vehicle {
   id: string;
   nickname: string;
@@ -23,6 +33,7 @@ export interface Vehicle {
   createdAt: string;
   updatedAt: string;
   userId?: number;
+  events?: EventRecord[];
 }
 
 interface VehicleContextData {
