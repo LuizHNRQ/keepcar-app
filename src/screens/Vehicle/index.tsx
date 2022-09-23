@@ -27,23 +27,34 @@ const Dashboard = ({ route, navigation }: any) => {
   const isViewMode = true;
   const [vehicleData, setVehicleData] = useState<Vehicle | null>(null);
 
-  const dataFetched = [
-    ...vehicleData!.events!,
-    ...vehicleData!.events!,
-    ...vehicleData!.events!,
-    ...vehicleData!.events!,
-  ];
-
   const fetchVehicleData = async () => {
     const data = await fetchVehicleById(vehicleId);
 
     if (data) {
-      setVehicleData(data);
+      //   setVehicleData(data);
+      setVehicleData({
+        ...data,
+        events: [
+          ...data.events!,
+          ...data.events!,
+          ...data.events!,
+          ...data.events!,
+          ...data.events!,
+        ],
+      });
     }
   };
 
   const handleNewEvent = () => {
     console.log("Novo evento");
+    navigation.navigate("timelineEvent");
+  };
+
+  const handleDetailsEvent = (eventId: number) => {
+    console.log("Novo evento", eventId);
+    navigation.navigate("timelineEvent", {
+      eventId: eventId,
+    });
   };
 
   const TimelineEvent = ({ event }: Data) => {
@@ -64,9 +75,7 @@ const Dashboard = ({ route, navigation }: any) => {
           <View style={styles.eventMoreDetailsContainer}>
             <TouchableOpacity
               style={styles.forwardButton}
-              onPress={() => {
-                console.log("id do evento");
-              }}
+              onPress={() => handleDetailsEvent(event.id)}
             >
               <Entypo name="chevron-thin-right" size={24} color="black" />
             </TouchableOpacity>
@@ -115,7 +124,7 @@ const Dashboard = ({ route, navigation }: any) => {
           <Text style={styles.timelimeTitle}>Linha do tempo</Text>
           <View style={styles.cardContainer}>
             <FlatList
-              data={dataFetched}
+              data={vehicleData.events}
               renderItem={({ item }) => (
                 <>
                   <TimelineEvent event={item} key={item.id} />

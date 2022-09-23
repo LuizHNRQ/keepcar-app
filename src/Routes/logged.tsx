@@ -10,6 +10,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import Dashboard from "../screens/dashboard";
 import Garage from "../screens/Garage";
 import Vehicle from "../screens/Vehicle";
+import TimeLineEvent from "../screens/TimeLineEvent";
 import Profile from "../screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -29,7 +30,20 @@ const Logged: React.FC = () => {
             title: "Garagem",
           }}
         />
-        <HomeStack.Screen name="Vehicle" component={Vehicle} />
+        <HomeStack.Screen
+          name="Vehicle"
+          options={{
+            title: "Veículo",
+          }}
+          component={Vehicle}
+        />
+        <HomeStack.Screen
+          name="timelineEvent"
+          options={{
+            title: "Registro",
+          }}
+          component={TimeLineEvent}
+        />
       </HomeStack.Navigator>
     );
   }
