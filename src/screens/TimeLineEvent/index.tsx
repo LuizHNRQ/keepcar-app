@@ -10,8 +10,10 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { FontAwesome } from "@expo/vector-icons";
 
 import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
 import { apiUrl } from "../../requests";
@@ -81,6 +83,10 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     );
   };
 
+  const handleAttachFiles = () => {
+    console.log("anexar aqrquivo");
+  };
+
   useEffect(() => {
     listEvents();
   }, []);
@@ -90,83 +96,105 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       style={{ flex: 1 }}
       onPress={() => setListOpen(false)}
     >
-      <View style={styles.container}>
-        {!!eventId ? (
-          <Text>Edicao 1243</Text>
-        ) : (
-          <>
-            <Text style={styles.header}>Cadastro de registro</Text>
+      <View style={styles.outerContainer}>
+        <View style={styles.container}>
+          {!!eventId ? (
+            <Text>Edicao 1243</Text>
+          ) : (
+            <>
+              <Text style={styles.header}>Detalhes</Text>
 
-            <Text style={styles.label}>Data</Text>
-            <Controller
-              name="eventDate"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <RNDateTimePicker
-                  locale="pt-BR"
-                  maximumDate={new Date()}
-                  style={styles.datepicker}
-                  onChange={(date) => {
-                    onChange(new Date(date.nativeEvent.timestamp!));
-                  }}
-                  value={value}
-                />
-              )}
-            />
-            <Text style={styles.label}>Tipo</Text>
-            <Controller
-              control={control}
-              name="eventType"
-              render={({ field: { onChange, value } }) => (
-                <DropDownPicker
-                  style={{ ...styles.input, marginLeft: 40 }}
-                  placeholder="Selecione o tipo de registro"
-                  placeholderStyle={styles.dropdownPlaceholder}
-                  open={listOpen}
-                  setOpen={() => setListOpen(!listOpen)}
-                  items={getPickerValues()}
-                  value={value}
-                  setValue={(item) => onChange(item(item.name))}
-                  dropDownContainerStyle={{
-                    //backgroundColor: "grey",
-                    borderColor: "skyblue",
-                    width: "80%",
-                    marginLeft: 40,
-                  }}
-                />
-              )}
-              rules={{
-                required: {
-                  value: true,
-                  message: "Please fill out all required fields.",
-                },
-              }}
-            />
-            {errors["eventType"]?.message ? (
-              <Text style={styles.errorText}>
-                {errors["eventType"]?.message}
-              </Text>
-            ) : null}
+              <Text style={styles.label}>Data</Text>
+              <Controller
+                name="eventDate"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <RNDateTimePicker
+                    locale="pt-BR"
+                    maximumDate={new Date()}
+                    style={styles.datepicker}
+                    onChange={(date) => {
+                      onChange(new Date(date.nativeEvent.timestamp!));
+                    }}
+                    value={value}
+                  />
+                )}
+              />
+              <Text style={styles.label}>Tipo</Text>
+              <Controller
+                control={control}
+                name="eventType"
+                render={({ field: { onChange, value } }) => (
+                  <DropDownPicker
+                    style={{ ...styles.input, marginLeft: 40 }}
+                    placeholder="Selecione o tipo de registro"
+                    placeholderStyle={styles.dropdownPlaceholder}
+                    open={listOpen}
+                    setOpen={() => setListOpen(!listOpen)}
+                    items={getPickerValues()}
+                    value={value}
+                    setValue={(item) => onChange(item(item.name))}
+                    dropDownContainerStyle={{
+                      //backgroundColor: "grey",
+                      borderColor: "purple",
+                      width: "80%",
+                      marginLeft: 40,
+                    }}
+                  />
+                )}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Please fill out all required fields.",
+                  },
+                }}
+              />
+              {errors["eventType"]?.message ? (
+                <Text style={styles.errorText}>
+                  {errors["eventType"]?.message}
+                </Text>
+              ) : null}
 
-            <Text style={styles.label}>Descrição</Text>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value}
-                />
-              )}
-              name="description"
-              //rules={{ required: true }}
-            />
-            <View style={styles.button}>
-              <Button title={"Salvar"} onPress={handleSubmit(onSubmit)} />
-            </View>
-          </>
-        )}
+              <Text style={styles.label}>Descrição</Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{ ...styles.input, height: 80 }}
+                    onBlur={onBlur}
+                    onChangeText={(value) => onChange(value)}
+                    value={value}
+                    multiline={true}
+                    numberOfLines={4}
+                  />
+                )}
+                name="description"
+                //rules={{ required: true }}
+              />
+              <Text style={styles.label}>Arquivos</Text>
+              <TouchableOpacity
+                style={{ ...styles.button, backgroundColor: "orange" }}
+                onPress={handleAttachFiles}
+              >
+                <FontAwesome name="file-photo-o" size={24} color="black" />
+                <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+        {/* <View style={styles.buttonSave}>
+          <Button title={"Salvar"} onPress={handleSubmit(onSubmit)} />
+        </View> */}
+        <TouchableOpacity
+          style={{
+            ...styles.button,
+            backgroundColor: "purple",
+          }}
+          onPress={handleSubmit(onSubmit)}
+        >
+          <FontAwesome name="save" size={24} color="white" />
+          <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -176,7 +204,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 20,
+    //paddingVertical: 20,
+    width: "100%",
   },
   label: {
     alignSelf: "flex-start",
@@ -185,16 +214,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   button: {
-    marginTop: 40,
-    color: "white",
-    height: 40,
-    backgroundColor: "#ec5990",
-    borderRadius: 4,
-    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    justifyContent: "center",
+    padding: 12,
+    borderRadius: 5,
+    width: "75%",
   },
   input: {
     backgroundColor: "white",
-    height: 40,
+    height: 50,
     padding: 10,
     borderRadius: 4,
     width: "80%",
@@ -210,6 +240,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
+    marginTop: 20,
   },
   header: {
     fontSize: 30,
@@ -218,8 +249,23 @@ const styles = StyleSheet.create({
   datepicker: {
     //width: "50%",
     width: 170,
-    height: 40,
+    height: 50,
     padding: 10,
+  },
+  buttonSave: {
+    color: "white",
+    height: 40,
+    backgroundColor: "#ec5990",
+    borderRadius: 4,
+    width: "80%",
+  },
+  outerContainer: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 40,
+    justifyContent: "space-between",
+    flexDirection: "column",
+    width: "100%",
   },
 });
 
