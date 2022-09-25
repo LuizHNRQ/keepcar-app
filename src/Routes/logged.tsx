@@ -13,6 +13,7 @@ import Vehicle from "../screens/Vehicle";
 import TimeLineEvent from "../screens/TimeLineEvent";
 import Profile from "../screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const Logged: React.FC = () => {
   const Tab = createBottomTabNavigator();
@@ -78,7 +79,7 @@ const Logged: React.FC = () => {
       <Tab.Screen
         name="GarageStack"
         component={VehicleStackScreen}
-        options={{
+        options={({ route }) => ({
           headerShown: false,
           tabBarLabel: ({ focused }) => {
             return (
@@ -94,24 +95,15 @@ const Logged: React.FC = () => {
               color={focused ? "#473198" : "grey"}
             />
           ),
-        }}
-        // options={{
-        //   title: "Minha Garagem",
-        //   tabBarLabel: ({ focused }) => {
-        //     return (
-        //       <Text style={{ color: focused ? "#473198" : "grey" }}>
-        //         Garagem
-        //       </Text>
-        //     );
-        //   },
-        //   tabBarIcon: ({ focused }) => (
-        //     <MaterialCommunityIcons
-        //       name="garage-variant"
-        //       size={30}
-        //       color={focused ? "#473198" : "grey"}
-        //     />
-        //   ),
-        // }}
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+            //console.log(routeName);
+            if (routeName === "timelineEvent" || routeName === "Vehicle") {
+              return { display: "none" };
+            }
+            return;
+          })(route),
+        })}
       />
       <Tab.Screen
         name="Profile"
