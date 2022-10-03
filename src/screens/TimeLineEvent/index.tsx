@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -29,6 +30,7 @@ type FormEventData = {
   description: string;
   eventType: string;
   eventDate: Date;
+  title: string;
 };
 
 type EventRecord = {
@@ -87,6 +89,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       description: "",
       eventType: "",
       eventDate: new Date(),
+      title: "",
     },
   });
 
@@ -107,7 +110,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     const req = await createEvent({
       ...data,
       eventDate: dayjs(data.eventDate).toISOString(),
-      picture: image,
+      picture: image as any,
     });
 
     console.log("aqui dentro", req);
@@ -127,17 +130,15 @@ const TimeLineEvent = ({ route, navigation }: any) => {
         }
       }
 
-      const result = await ImagePicker.launchImageLibraryAsync({
+      const result: any = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.2,
       });
 
-      console.log("Result->>>", result);
-
       if (!result.cancelled) {
-        const localUri = result.uri!;
+        const localUri = result.uri;
         const filename = localUri.split("/").pop()!;
 
         const match = /\.(\w+)$/.exec(filename!);
@@ -225,6 +226,20 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     </Text>
                   ) : null}
 
+                  <Text style={styles.label}>Titulo</Text>
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        style={{ ...styles.input }}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    )}
+                    name="title"
+                    //rules={{ required: true }}
+                  />
                   <Text style={styles.label}>Descrição</Text>
                   <Controller
                     control={control}
@@ -242,22 +257,45 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     //rules={{ required: true }}
                   />
                   <Text style={styles.label}>Arquivos</Text>
-                  <TouchableOpacity
-                    style={{ ...styles.button, backgroundColor: "orange" }}
-                    onPress={onHandlePickImage}
-                  >
-                    <FontAwesome name="file-photo-o" size={24} color="black" />
-                    <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
-                  </TouchableOpacity>
+                  {!!!image.uri && (
+                    <TouchableOpacity
+                      style={{ ...styles.button, backgroundColor: "orange" }}
+                      onPress={onHandlePickImage}
+                    >
+                      <FontAwesome
+                        name="file-photo-o"
+                        size={24}
+                        color="black"
+                      />
+                      <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               )}
             </View>
 
             {image.uri && (
-              <Image
-                source={image && { uri: image?.uri }}
-                style={{ width: 280, height: 280 }}
-              />
+              <View style={styles.imageContainer}>
+                <View style={styles.imageOuter}>
+                  <Image
+                    source={image && { uri: image?.uri }}
+                    style={styles.img}
+                  />
+                </View>
+                <View style={styles.textOuter}>
+                  <TouchableOpacity
+                    style={{ ...styles.button }}
+                    onPress={onHandlePickImage}
+                  >
+                    <MaterialCommunityIcons
+                      name="image-edit-outline"
+                      size={28}
+                      color="black"
+                    />
+                    <Text style={{ marginLeft: 10 }}>Alterar Arquivo</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             )}
             {/* <View style={styles.buttonSave}>
           <Button title={"Salvar"} onPress={handleSubmit(onSubmit)} />
@@ -266,6 +304,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
               style={{
                 ...styles.button,
                 backgroundColor: "purple",
+                marginTop: 20,
               }}
               onPress={handleSubmit(onSubmit)}
             >
@@ -346,6 +385,27 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
   },
+  imageContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+    width: "75%",
+    padding: 5,
+    borderColor: "grey",
+    borderWidth: 2,
+    marginVertical: 10,
+    borderRadius: 4,
+  },
+  imageOuter: {
+    flex: 1,
+  },
+  textOuter: {
+    flex: 3,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  img: { width: 80, height: 80, resizeMode: "cover" },
 });
 
 export default TimeLineEvent;
