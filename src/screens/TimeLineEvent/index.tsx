@@ -2,6 +2,7 @@ import useAxios from "axios-hooks";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -11,6 +12,9 @@ import {
   TouchableWithoutFeedback,
   Alert,
   TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Image,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { FontAwesome } from "@expo/vector-icons";
@@ -19,8 +23,9 @@ import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
 import { apiUrl } from "../../requests";
 import { EventsType, fetchEventType } from "../../requests/eventType";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { createEvent } from "../../requests/event";
 
-type FormData = {
+type FormEventData = {
   description: string;
   eventType: string;
   eventDate: Date;
@@ -31,11 +36,23 @@ type EventRecord = {
   value: string;
 };
 
+type ImageType = {
+  uri: string;
+  filename: string;
+  type: string;
+  name: string;
+};
+
 const TimeLineEvent = ({ route, navigation }: any) => {
   const { eventId } = route?.params || {};
   const [listOpen, setListOpen] = useState(false);
   const [selectEventType, setSelectEventType] = useState<EventsType[] | []>([]);
-  const [date, setDate] = useState(new Date());
+  const [image, setImage] = useState<ImageType>({
+    uri: null,
+    filename: "",
+    type: "",
+    name: "",
+  });
 
   const listData: EventRecord[] = [
     { label: "Male", value: "male" },
@@ -65,7 +82,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<FormEventData>({
     defaultValues: {
       description: "",
       eventType: "",
@@ -73,7 +90,12 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormEventData) => {
+    console.log("Enviado->", {
+      ...data,
+      eventDate: dayjs(data.eventDate).format("DD/MM/YYYY"),
+      image: image,
+    });
     Alert.alert(
       "Enviado",
       JSON.stringify({
@@ -81,10 +103,55 @@ const TimeLineEvent = ({ route, navigation }: any) => {
         eventDate: dayjs(data.eventDate).format("DD/MM/YYYY"),
       })
     );
+
+    const req = await createEvent({
+      ...data,
+      eventDate: dayjs(data.eventDate).toISOString(),
+      picture: image,
+    });
+
+    console.log("aqui dentro", req);
   };
 
-  const handleAttachFiles = () => {
-    console.log("anexar aqrquivo");
+  const onHandlePickImage = async () => {
+    try {
+      const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
+
+      if (!granted) {
+        const { granted: requestGranted } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!requestGranted) {
+          console.log("Precisamos da sua permissão para abrir suas fotos :");
+          return;
+        }
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.2,
+      });
+
+      console.log("Result->>>", result);
+
+      if (!result.cancelled) {
+        const localUri = result.uri!;
+        const filename = localUri.split("/").pop()!;
+
+        const match = /\.(\w+)$/.exec(filename!);
+        const type = match ? `image/${match[1]}` : `image`;
+        setImage({
+          uri: localUri.replace("file://", ""),
+          filename,
+          type,
+          name: filename,
+        });
+      }
+    } catch (err) {
+      console.log("Erro ao abrir suas fotos");
+    }
   };
 
   useEffect(() => {
@@ -92,111 +159,123 @@ const TimeLineEvent = ({ route, navigation }: any) => {
   }, []);
 
   return (
-    <TouchableWithoutFeedback
-      style={{ flex: 1 }}
-      onPress={() => setListOpen(false)}
-    >
-      <View style={styles.outerContainer}>
-        <View style={styles.container}>
-          {!!eventId ? (
-            <Text>Edicao 1243</Text>
-          ) : (
-            <>
-              <Text style={styles.header}>Detalhes</Text>
+    <SafeAreaView>
+      <ScrollView>
+        <TouchableWithoutFeedback
+          style={{ flex: 1 }}
+          onPress={() => setListOpen(false)}
+        >
+          <View style={styles.outerContainer}>
+            <View style={styles.container}>
+              {!!eventId ? (
+                <Text>Edicao 1243</Text>
+              ) : (
+                <>
+                  <Text style={styles.header}>Detalhes</Text>
 
-              <Text style={styles.label}>Data</Text>
-              <Controller
-                name="eventDate"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <RNDateTimePicker
-                    locale="pt-BR"
-                    maximumDate={new Date()}
-                    style={styles.datepicker}
-                    onChange={(date) => {
-                      onChange(new Date(date.nativeEvent.timestamp!));
-                    }}
-                    value={value}
+                  <Text style={styles.label}>Data</Text>
+                  <Controller
+                    name="eventDate"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <RNDateTimePicker
+                        locale="pt-BR"
+                        maximumDate={new Date()}
+                        style={styles.datepicker}
+                        onChange={(date) => {
+                          onChange(new Date(date.nativeEvent.timestamp!));
+                        }}
+                        value={value}
+                      />
+                    )}
                   />
-                )}
-              />
-              <Text style={styles.label}>Tipo</Text>
-              <Controller
-                control={control}
-                name="eventType"
-                render={({ field: { onChange, value } }) => (
-                  <DropDownPicker
-                    style={{ ...styles.input, marginLeft: 40 }}
-                    placeholder="Selecione o tipo de registro"
-                    placeholderStyle={styles.dropdownPlaceholder}
-                    open={listOpen}
-                    setOpen={() => setListOpen(!listOpen)}
-                    items={getPickerValues()}
-                    value={value}
-                    setValue={(item) => onChange(item(item.name))}
-                    dropDownContainerStyle={{
-                      //backgroundColor: "grey",
-                      borderColor: "purple",
-                      width: "80%",
-                      marginLeft: 40,
+                  <Text style={styles.label}>Tipo</Text>
+                  <Controller
+                    control={control}
+                    name="eventType"
+                    render={({ field: { onChange, value } }) => (
+                      <DropDownPicker
+                        style={{ ...styles.input, marginLeft: 40 }}
+                        placeholder="Selecione o tipo de registro"
+                        placeholderStyle={styles.dropdownPlaceholder}
+                        open={listOpen}
+                        setOpen={() => setListOpen(!listOpen)}
+                        items={getPickerValues()}
+                        value={value}
+                        setValue={(item) => onChange(item(item.name))}
+                        dropDownContainerStyle={{
+                          //backgroundColor: "grey",
+                          borderColor: "purple",
+                          width: "80%",
+                          marginLeft: 40,
+                        }}
+                        listMode="SCROLLVIEW"
+                      />
+                    )}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Please fill out all required fields.",
+                      },
                     }}
                   />
-                )}
-                rules={{
-                  required: {
-                    value: true,
-                    message: "Please fill out all required fields.",
-                  },
-                }}
-              />
-              {errors["eventType"]?.message ? (
-                <Text style={styles.errorText}>
-                  {errors["eventType"]?.message}
-                </Text>
-              ) : null}
+                  {errors["eventType"]?.message ? (
+                    <Text style={styles.errorText}>
+                      {errors["eventType"]?.message}
+                    </Text>
+                  ) : null}
 
-              <Text style={styles.label}>Descrição</Text>
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={{ ...styles.input, height: 80 }}
-                    onBlur={onBlur}
-                    onChangeText={(value) => onChange(value)}
-                    value={value}
-                    multiline={true}
-                    numberOfLines={4}
+                  <Text style={styles.label}>Descrição</Text>
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        style={{ ...styles.input, height: 80 }}
+                        onBlur={onBlur}
+                        onChangeText={(value) => onChange(value)}
+                        value={value}
+                        multiline={true}
+                        numberOfLines={4}
+                      />
+                    )}
+                    name="description"
+                    //rules={{ required: true }}
                   />
-                )}
-                name="description"
-                //rules={{ required: true }}
+                  <Text style={styles.label}>Arquivos</Text>
+                  <TouchableOpacity
+                    style={{ ...styles.button, backgroundColor: "orange" }}
+                    onPress={onHandlePickImage}
+                  >
+                    <FontAwesome name="file-photo-o" size={24} color="black" />
+                    <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+
+            {image.uri && (
+              <Image
+                source={image && { uri: image?.uri }}
+                style={{ width: 280, height: 280 }}
               />
-              <Text style={styles.label}>Arquivos</Text>
-              <TouchableOpacity
-                style={{ ...styles.button, backgroundColor: "orange" }}
-                onPress={handleAttachFiles}
-              >
-                <FontAwesome name="file-photo-o" size={24} color="black" />
-                <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-        {/* <View style={styles.buttonSave}>
+            )}
+            {/* <View style={styles.buttonSave}>
           <Button title={"Salvar"} onPress={handleSubmit(onSubmit)} />
         </View> */}
-        <TouchableOpacity
-          style={{
-            ...styles.button,
-            backgroundColor: "purple",
-          }}
-          onPress={handleSubmit(onSubmit)}
-        >
-          <FontAwesome name="save" size={24} color="white" />
-          <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
+            <TouchableOpacity
+              style={{
+                ...styles.button,
+                backgroundColor: "purple",
+              }}
+              onPress={handleSubmit(onSubmit)}
+            >
+              <FontAwesome name="save" size={24} color="white" />
+              <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
