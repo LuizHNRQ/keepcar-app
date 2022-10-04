@@ -1,6 +1,5 @@
-import useAxios from "axios-hooks";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -17,11 +16,9 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { FontAwesome } from "@expo/vector-icons";
 
-import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
-import { apiUrl } from "../../requests";
+import DropDownPicker from "react-native-dropdown-picker";
 import { EventsType, fetchEventType } from "../../requests/eventType";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { createEvent } from "../../requests/events";
@@ -31,6 +28,7 @@ type FormEventData = {
   eventType: string;
   eventDate: Date;
   title: string;
+  km: string;
 };
 
 type EventRecord = {
@@ -56,16 +54,10 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     name: "",
   });
 
-  const listData: EventRecord[] = [
-    { label: "Male", value: "male" },
-    { label: "Female", value: "female" },
-  ];
-
   const listEvents = async () => {
     const events = await fetchEventType();
 
     if (events) {
-      //console.log("EVENTOO", events);
       setSelectEventType(events);
     }
   };
@@ -90,6 +82,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       eventType: "",
       eventDate: new Date(),
       title: "",
+      km: "",
     },
   });
 
@@ -107,13 +100,13 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       })
     );
 
-    const req = await createEvent({
+    await createEvent({
       ...data,
       eventDate: dayjs(data.eventDate).toISOString(),
       picture: image as any,
     });
 
-    console.log("aqui dentro", req);
+    navigation.goBack();
   };
 
   const onHandlePickImage = async () => {
@@ -240,6 +233,23 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     name="title"
                     //rules={{ required: true }}
                   />
+                  <Text style={styles.label}>Quilometragem</Text>
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        style={{ ...styles.input }}
+                        onBlur={onBlur}
+                        onChangeText={(value) =>
+                          onChange(value.replace(/[^0-9]/g, ""))
+                        }
+                        value={value}
+                        keyboardType="number-pad"
+                      />
+                    )}
+                    name="km"
+                    //rules={{ required: true }}
+                  />
                   <Text style={styles.label}>Descrição</Text>
                   <Controller
                     control={control}
@@ -270,47 +280,51 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
                     </TouchableOpacity>
                   )}
+
+                  {image.uri && (
+                    <View style={styles.imageContainer}>
+                      <View style={styles.imageOuter}>
+                        <Image
+                          source={image && { uri: image?.uri }}
+                          style={styles.img}
+                        />
+                      </View>
+                      <View style={styles.textOuter}>
+                        <TouchableOpacity
+                          style={{ ...styles.button }}
+                          onPress={onHandlePickImage}
+                        >
+                          <MaterialCommunityIcons
+                            name="image-edit-outline"
+                            size={28}
+                            color="black"
+                          />
+                          <Text style={{ marginLeft: 10 }}>
+                            Alterar Arquivo
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                  {/* <View style={styles.buttonSave}>
+          <Button title={"Salvar"} onPress={handleSubmit(onSubmit)} />
+        </View> */}
+                  <TouchableOpacity
+                    style={{
+                      ...styles.button,
+                      backgroundColor: "purple",
+                      marginTop: 20,
+                    }}
+                    onPress={handleSubmit(onSubmit)}
+                  >
+                    <FontAwesome name="save" size={24} color="white" />
+                    <Text style={{ marginLeft: 10, color: "white" }}>
+                      Salvar
+                    </Text>
+                  </TouchableOpacity>
                 </>
               )}
             </View>
-
-            {image.uri && (
-              <View style={styles.imageContainer}>
-                <View style={styles.imageOuter}>
-                  <Image
-                    source={image && { uri: image?.uri }}
-                    style={styles.img}
-                  />
-                </View>
-                <View style={styles.textOuter}>
-                  <TouchableOpacity
-                    style={{ ...styles.button }}
-                    onPress={onHandlePickImage}
-                  >
-                    <MaterialCommunityIcons
-                      name="image-edit-outline"
-                      size={28}
-                      color="black"
-                    />
-                    <Text style={{ marginLeft: 10 }}>Alterar Arquivo</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-            {/* <View style={styles.buttonSave}>
-          <Button title={"Salvar"} onPress={handleSubmit(onSubmit)} />
-        </View> */}
-            <TouchableOpacity
-              style={{
-                ...styles.button,
-                backgroundColor: "purple",
-                marginTop: 20,
-              }}
-              onPress={handleSubmit(onSubmit)}
-            >
-              <FontAwesome name="save" size={24} color="white" />
-              <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
-            </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>

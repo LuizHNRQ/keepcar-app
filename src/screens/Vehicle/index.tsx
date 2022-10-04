@@ -79,7 +79,7 @@ const Dashboard = ({ route, navigation }: any) => {
   };
 
   useEffect(() => {
-    console.log("Renderizou");
+    console.log("Renderizou", vehicleId);
     if (vehicleId) {
       fetchVehicleData();
     }

@@ -8,6 +8,7 @@ type EventValues = {
   eventDate: string;
   picture: ImageType & Blob;
   title: string;
+  km: string;
 };
 
 type ImageType = {
@@ -24,7 +25,7 @@ export const createEvent = async (values: EventValues) => {
     form.append("title", values.title);
     form.append("description", values.description);
     form.append("eventTypeId", values.eventType);
-    form.append("km", "46000");
+    form.append("km", values.km);
     form.append("date", values.eventDate);
     form.append("vehicleId", "A123AA");
 
