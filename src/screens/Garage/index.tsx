@@ -16,8 +16,6 @@ import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useVehicle, Vehicle } from "../../contexts/vehicles";
 
-// import { Container } from './styles';
-
 type Data = {
   vehicle: Vehicle;
 };
@@ -34,7 +32,6 @@ const Dashboard: React.FC = ({ navigation }: any) => {
   };
 
   const handleShowVehicleDetails = (vehicleID: string) => {
-    console.log("Detalhes", vehicleID);
     navigation.navigate("Vehicle", {
       vehicleId: vehicleID,
     });
@@ -52,10 +49,11 @@ const Dashboard: React.FC = ({ navigation }: any) => {
           />
         </View>
         <View style={styles.itemTextView}>
-          <Text>Chevrolet Onix</Text>
-          <Text style={styles.title}>GJL-8D50</Text>
-          <Text>Ultimo Evento: 22/09</Text>
-          {/* <Text style={styles.title}>{vehicle.nickname}</Text> */}
+          <Text>{`${vehicle.maker.toUpperCase()} ${vehicle.model.toUpperCase()} - ${
+            vehicle.nickname
+          }`}</Text>
+          <Text style={styles.title}>{vehicle.plate.toUpperCase()}</Text>
+          <Text>Eventos cadastrados: {vehicle?.events?.length}</Text>
         </View>
         <View style={styles.fowardButtonView}>
           <TouchableOpacity
@@ -65,7 +63,7 @@ const Dashboard: React.FC = ({ navigation }: any) => {
               handleShowVehicleDetails(vehicle.id);
             }}
           >
-            <Entypo name="chevron-thin-right" size={24} color="black" />
+            <Entypo name="chevron-thin-right" size={24} color="#353036" />
           </TouchableOpacity>
         </View>
       </View>
@@ -76,17 +74,19 @@ const Dashboard: React.FC = ({ navigation }: any) => {
     <View style={styles.container}>
       <View style={styles.searchContainer}>
         <TouchableOpacity style={styles.button} onPress={handleNewVehicle}>
-          <MaterialIcons name="add-circle" size={24} color="black" />
-          <Text style={{ marginLeft: 10 }}>Adicionar Veículo</Text>
+          <MaterialIcons name="add-circle" size={24} color="white" />
+          <Text style={{ marginLeft: 10, color: "white" }}>
+            Adicionar Veículo
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <Ionicons name="search" size={24} color="black" />
+          <Ionicons name="search" size={24} color="#353036" />
         </TouchableOpacity>
       </View>
 
       <View style={styles.cardContainer}>
         <FlatList
-          data={[vehicles![0]]}
+          data={vehicles}
           renderItem={({ item }) => <Item vehicle={item} />}
           keyExtractor={(item, index) => item.id + index}
         />
@@ -100,19 +100,19 @@ export default Dashboard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#171614",
+    //backgroundColor: "#171614",
   },
   searchContainer: {
-    backgroundColor: "#5e747f",
+    backgroundColor: "#d4defa",
     flexDirection: "row",
-    height: "15%",
+    height: "12%",
     alignItems: "center",
     justifyContent: "space-evenly",
   },
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "purple",
     justifyContent: "center",
     padding: 10,
     borderRadius: 5,
@@ -134,11 +134,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: "#c6d2ed",
-    padding: 15,
+    //backgroundColor: "#c6d2ed",
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 10,
     flexDirection: "row",
+    //borderWidth: 1,
   },
   itemImage: {
     backgroundColor: "white",
@@ -154,8 +157,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemTextView: {
+    marginLeft: 10,
     flex: 2,
-    backgroundColor: "lightgreen",
+    //backgroundColor: "lightgreen",
     justifyContent: "space-between",
   },
   fowardButtonView: {
@@ -167,6 +171,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "pink",
+    //backgroundColor: "pink",
+    backgroundColor: "#f5cdf7",
+    borderRadius: 5,
   },
 });
