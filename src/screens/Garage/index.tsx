@@ -86,13 +86,7 @@ const Dashboard: React.FC = ({ navigation }: any) => {
 
       <View style={styles.cardContainer}>
         <FlatList
-          data={[
-            vehicles![0],
-            vehicles![0],
-            vehicles![0],
-            vehicles![0],
-            vehicles![0],
-          ]}
+          data={[vehicles![0]]}
           renderItem={({ item }) => <Item vehicle={item} />}
           keyExtractor={(item, index) => item.id + index}
         />

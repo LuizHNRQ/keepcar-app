@@ -15,8 +15,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
 import dayjs from "dayjs";
-
-// import { Container } from './styles';
+import { Events, fetchEventsByVehicleId } from "../../requests/events";
 
 type Data = {
   event: EventRecord;
@@ -25,23 +24,15 @@ type Data = {
 const Dashboard = ({ route, navigation }: any) => {
   const { vehicleId } = route?.params;
   const isViewMode = true;
-  const [vehicleData, setVehicleData] = useState<Vehicle | null>(null);
+  const [vehicleData, setVehicleData] = useState<Vehicle>(null);
+  const [events, setEvents] = useState<Events[]>(null);
 
   const fetchVehicleData = async () => {
-    const data = await fetchVehicleById(vehicleId);
+    const data = await fetchEventsByVehicleId(vehicleId);
 
     if (data) {
-      //   setVehicleData(data);
-      setVehicleData({
-        ...data,
-        events: [
-          ...data.events!,
-          ...data.events!,
-          ...data.events!,
-          ...data.events!,
-          ...data.events!,
-        ],
-      });
+      setVehicleData(data.vehicle);
+      setEvents(data.events);
     }
   };
 
@@ -124,7 +115,7 @@ const Dashboard = ({ route, navigation }: any) => {
           <Text style={styles.timelimeTitle}>Linha do tempo</Text>
           <View style={styles.cardContainer}>
             <FlatList
-              data={vehicleData.events}
+              data={events}
               renderItem={({ item }) => (
                 <>
                   <TimelineEvent event={item} key={item.id} />

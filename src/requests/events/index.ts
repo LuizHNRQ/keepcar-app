@@ -1,4 +1,5 @@
 import { AxiosResponse } from "axios";
+import { Vehicle } from "contexts/vehicles";
 import { api } from "..";
 
 type EventValues = {
@@ -43,5 +44,30 @@ export const createEvent = async (values: EventValues) => {
     return data;
   } catch (error) {
     console.log("error 1455", error);
+  }
+};
+
+export type Events = {
+  id: number;
+  title: string;
+  km: number;
+  description: string;
+  pictures: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  vehicleId: string;
+  eventTypeId: number;
+};
+
+export const fetchEventsByVehicleId = async (vehicleId: string) => {
+  try {
+    const { data } = await api.get<{ vehicle: Vehicle; events: Events[] }>(
+      `/event/${vehicleId}`
+    );
+
+    return data;
+  } catch (error) {
+    console.log("error 1233", error);
   }
 };

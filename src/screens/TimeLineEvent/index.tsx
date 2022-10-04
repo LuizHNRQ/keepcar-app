@@ -24,7 +24,7 @@ import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
 import { apiUrl } from "../../requests";
 import { EventsType, fetchEventType } from "../../requests/eventType";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { createEvent } from "../../requests/event";
+import { createEvent } from "../../requests/events";
 
 type FormEventData = {
   description: string;
