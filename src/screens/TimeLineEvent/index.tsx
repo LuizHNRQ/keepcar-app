@@ -49,6 +49,7 @@ type ImageType = {
 
 const TimeLineEvent = ({ route, navigation }: any) => {
   const { eventId } = route?.params || {};
+  const [editMode, setEditMode] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [selectEventType, setSelectEventType] = useState<EventsType[]>([]);
   const [eventDetails, setEventDetails] = useState<Events>(null);
@@ -91,6 +92,8 @@ const TimeLineEvent = ({ route, navigation }: any) => {
   const {
     control,
     handleSubmit,
+    setValue,
+
     formState: { errors },
   } = useForm<FormEventData>({
     defaultValues: {
@@ -174,17 +177,23 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     }
   }, [eventId]);
 
+  useEffect(() => {
+    if (eventId && eventDetails) {
+      setEditMode(true);
+    }
+  }, [eventId, eventDetails]);
+
   return (
     <SafeAreaView>
-      <ScrollView scrollEnabled={eventId && eventDetails ? false : true}>
+      <ScrollView scrollEnabled={!!!editMode}>
         <TouchableWithoutFeedback
-          disabled={eventId && eventDetails ? true : false}
+          disabled={editMode}
           style={{ flex: 1 }}
           onPress={() => setListOpen(false)}
         >
           <View style={styles.outerContainer}>
             <View style={styles.container}>
-              {!!eventId && eventDetails ? (
+              {editMode ? (
                 <View
                   style={{
                     flex: 1,
@@ -310,7 +319,20 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     </View>
                   </View>
                   <View style={{ flex: 1, marginTop: 90, width: "100%" }}>
-                    <TouchableOpacity style={styles.imgEdit} onPress={() => {}}>
+                    <TouchableOpacity
+                      style={styles.imgEdit}
+                      onPress={() => {
+                        setEditMode(false);
+                        setValue("description", eventDetails.description);
+                        setValue("km", eventDetails.km.toString());
+                        setValue(
+                          "eventType",
+                          eventDetails.eventTypeId.toString()
+                        );
+                        setValue("title", eventDetails.title);
+                        setValue("eventDate", new Date(eventDetails.date));
+                      }}
+                    >
                       <FontAwesome name="edit" size={24} color="white" />
                       <Text style={{ marginLeft: 10, color: "white" }}>
                         Editar Registro
