@@ -21,7 +21,11 @@ import { FontAwesome } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 import { EventsType, fetchEventType } from "../../requests/eventType";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { createEvent } from "../../requests/events";
+import {
+  createEvent,
+  Events,
+  showEventDetailsById,
+} from "../../requests/events";
 
 type FormEventData = {
   description: string;
@@ -46,7 +50,8 @@ type ImageType = {
 const TimeLineEvent = ({ route, navigation }: any) => {
   const { eventId } = route?.params || {};
   const [listOpen, setListOpen] = useState(false);
-  const [selectEventType, setSelectEventType] = useState<EventsType[] | []>([]);
+  const [selectEventType, setSelectEventType] = useState<EventsType[]>([]);
+  const [eventDetails, setEventDetails] = useState<Events>(null);
   const [image, setImage] = useState<ImageType>({
     uri: null,
     filename: "",
@@ -59,6 +64,17 @@ const TimeLineEvent = ({ route, navigation }: any) => {
 
     if (events) {
       setSelectEventType(events);
+    }
+  };
+
+  const showEventDetails = async (eventId: string) => {
+    const details = await showEventDetailsById(eventId);
+
+    if (details) {
+      setEventDetails(details);
+      // if (details.pictures) {
+      //   showImage(details.pictures);
+      // }
     }
   };
 
@@ -152,17 +168,156 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     listEvents();
   }, []);
 
+  useEffect(() => {
+    if (eventId) {
+      showEventDetails(eventId);
+    }
+  }, [eventId]);
+
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView scrollEnabled={eventId && eventDetails ? false : true}>
         <TouchableWithoutFeedback
+          disabled={eventId && eventDetails ? true : false}
           style={{ flex: 1 }}
           onPress={() => setListOpen(false)}
         >
           <View style={styles.outerContainer}>
             <View style={styles.container}>
-              {!!eventId ? (
-                <Text>Edicao 1243</Text>
+              {!!eventId && eventDetails ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "space-between",
+                    backgroundColor: "white",
+                    width: "88%",
+                    padding: 20,
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text
+                    style={{
+                      ...styles.header,
+                      alignSelf: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    {eventDetails.title}
+                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <View style={styles.editContainer}>
+                      <View style={styles.lineDetails}>
+                        <Text style={styles.titleEdit}>Data do evento:</Text>
+                        <Text style={styles.textEdit}>
+                          {dayjs(eventDetails.date).format("DD/MM/YYYY")}
+                        </Text>
+                      </View>
+                      <View style={styles.lineDetails}>
+                        <Text style={styles.titleEdit}>Quilometragem:</Text>
+                        <Text style={styles.textEdit}>{eventDetails.km}</Text>
+                      </View>
+                      <View style={styles.lineDetails}>
+                        <Text style={styles.titleEdit}>Categoria:</Text>
+                        <Text style={styles.textEdit}>
+                          {
+                            selectEventType.find(
+                              (event) => event.id === eventDetails.eventTypeId
+                            ).title
+                          }
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          ...styles.lineDetails,
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Text style={styles.titleEdit}>Detalhes:</Text>
+                        <Text
+                          style={{
+                            ...styles.textEdit,
+                            alignSelf: "center",
+                          }}
+                        >
+                          {eventDetails.description}
+                        </Text>
+                      </View>
+                      <View style={styles.lineDetails}>
+                        <Text style={styles.titleEdit}>Imagem:</Text>
+                      </View>
+                      <View
+                        style={{
+                          ...styles.lineDetails,
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Image
+                          source={require("../Garage/noImageFound.png")}
+                          resizeMethod="scale"
+                          resizeMode="cover"
+                          style={styles.itemImage}
+                        />
+                      </View>
+                      <View style={styles.lineDetails}>
+                        <Text
+                          style={{
+                            ...styles.textEdit,
+                            color: "grey",
+                            textDecorationLine: "none",
+                          }}
+                        >
+                          Data de inserção:
+                        </Text>
+                        <Text
+                          style={{
+                            ...styles.textEdit,
+                            color: "grey",
+                            textDecorationLine: "none",
+                          }}
+                        >
+                          {dayjs(eventDetails.createdAt).format(
+                            "DD/MM/YYYY  hh:mm"
+                          )}
+                        </Text>
+                      </View>
+                      <View style={styles.lineDetails}>
+                        <Text
+                          style={{
+                            ...styles.textEdit,
+                            color: "grey",
+                            textDecorationLine: "none",
+                          }}
+                        >
+                          Data de edição:
+                        </Text>
+                        <Text
+                          style={{
+                            ...styles.textEdit,
+                            color: "grey",
+                            textDecorationLine: "none",
+                          }}
+                        >
+                          {dayjs(eventDetails.createdAt).isSame(
+                            eventDetails.updatedAt
+                          )
+                            ? "Nunca editado"
+                            : dayjs(eventDetails.updatedAt).format(
+                                "DD/MM/YYYY  hh:mm"
+                              )}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={{ flex: 1, marginTop: 90, width: "100%" }}>
+                    <TouchableOpacity style={styles.imgEdit} onPress={() => {}}>
+                      <FontAwesome name="edit" size={24} color="white" />
+                      <Text style={{ marginLeft: 10, color: "white" }}>
+                        Editar Registro
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               ) : (
                 <>
                   <Text style={styles.header}>Detalhes</Text>
@@ -420,6 +575,44 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   img: { width: 80, height: 80, resizeMode: "cover" },
+  //edit
+  editContainer: {
+    flex: 1,
+    // backgroundColor: "lightgreen",
+    height: "100%",
+  },
+  lineDetails: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 5,
+  },
+  itemImage: {
+    //backgroundColor: "white",
+    flex: 1,
+    width: 250,
+    height: 180,
+    resizeMode: "cover",
+    marginVertical: 15,
+  },
+  imgEdit: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 12,
+    borderRadius: 5,
+    backgroundColor: "purple",
+    marginTop: 20,
+  },
+  textEdit: {
+    fontSize: 16,
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+    textDecorationColor: "grey",
+  },
+  titleEdit: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
 
 export default TimeLineEvent;

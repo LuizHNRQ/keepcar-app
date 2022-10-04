@@ -40,8 +40,6 @@ export const createEvent = async (values: EventValues) => {
       }
     );
 
-    console.log("enevts", data);
-
     return data;
   } catch (error) {
     console.log("error 1455", error);
@@ -70,5 +68,23 @@ export const fetchEventsByVehicleId = async (vehicleId: string) => {
     return data;
   } catch (error) {
     console.log("error 1233", error);
+  }
+};
+
+export const showEventDetailsById = async (eventId: string) => {
+  try {
+    const { data } = await api.get<Events>(`/eventdetails/${eventId}`);
+    return data;
+  } catch (error) {
+    console.log("error 99999", error);
+  }
+};
+
+export const showImageById = async (imageId: string) => {
+  try {
+    const { data } = await api.get<Events>(`/event/photo/${imageId}`);
+    return data;
+  } catch (error) {
+    console.log("error img 45666", error);
   }
 };
