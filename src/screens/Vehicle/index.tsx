@@ -55,9 +55,28 @@ const Dashboard = ({ route, navigation }: any) => {
           <Text style={[styles.eventTextHeader, { fontWeight: "bold" }]}>
             {event.km + " km"}
           </Text>
-          <Text style={styles.eventTextHeader}>
-            {dayjs(event.date).format("DD/MM/YY")}
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {dayjs(event.date).isAfter(
+              dayjs(event.createdAt).subtract(15, "days")
+            ) && (
+              <MaterialIcons
+                style={{ alignSelf: "center", marginRight: 5 }}
+                name="verified"
+                size={18}
+                color="#1DA1F2"
+              />
+            )}
+
+            <Text style={styles.eventTextHeader}>
+              {dayjs(event.date).format("DD/MM/YY")}
+            </Text>
+          </View>
         </View>
         <View style={styles.eventContentContainer}>
           <View style={styles.eventDescriptionConmtainer}>
@@ -68,11 +87,9 @@ const Dashboard = ({ route, navigation }: any) => {
               style={styles.forwardButton}
               onPress={() => handleDetailsEvent(event.id)}
             >
-              <Entypo name="chevron-thin-right" size={24} color="black" />
+              <Entypo name="chevron-thin-right" size={24} color="#353036" />
             </TouchableOpacity>
           </View>
-
-          {/* <Text>{event.description}</Text> */}
         </View>
       </View>
     );
@@ -90,26 +107,23 @@ const Dashboard = ({ route, navigation }: any) => {
       {!vehicleData ? (
         <Text>carregando....</Text>
       ) : (
-        <View style={{ marginTop: 20, alignItems: "center", flex: 1 }}>
+        <View style={{ marginTop: 0, alignItems: "center", flex: 1 }}>
           <View style={styles.headerContainer}>
             <View style={styles.vehicleHeader}>
               <Text style={styles.header}>
                 {`${vehicleData.maker.toUpperCase()} ${vehicleData.model.toUpperCase()}`}
-                {/* /${dayjs(vehicleData.year).format("YY")} */}
               </Text>
-              {/* <MaterialIcons name="ios-share" size={24} color="black" /> */}
             </View>
-
             <Text style={styles.subHeader}>
               {vehicleData.plate.toUpperCase()}
             </Text>
 
             <TouchableOpacity style={styles.button} onPress={handleNewEvent}>
-              <MaterialIcons name="add-circle" size={24} color="black" />
-              <Text style={{ marginLeft: 10 }}>Adicionar Evento</Text>
+              <MaterialIcons name="add-circle" size={24} color="white" />
+              <Text style={{ marginLeft: 10, color: "white" }}>
+                Adicionar Evento
+              </Text>
             </TouchableOpacity>
-
-            {/* <Text style={styles.timelimeTitle}>Linha do tempo</Text> */}
           </View>
 
           <Text style={styles.timelimeTitle}>Linha do tempo</Text>
@@ -119,13 +133,15 @@ const Dashboard = ({ route, navigation }: any) => {
               renderItem={({ item }) => (
                 <>
                   <TimelineEvent event={item} key={item.id} />
-                  <View style={styles.arrowConatainer}>
-                    <FontAwesome
-                      name="long-arrow-down"
-                      size={24}
-                      color="black"
-                    />
-                  </View>
+                  {item.id !== events[events.length - 1].id && (
+                    <View style={styles.arrowConatainer}>
+                      <FontAwesome
+                        name="long-arrow-down"
+                        size={24}
+                        color="#353036"
+                      />
+                    </View>
+                  )}
                 </>
               )}
               keyExtractor={(item, index) => `${item.id}${index}`}
@@ -140,17 +156,18 @@ const Dashboard = ({ route, navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgrey",
+    // backgroundColor: "lightgrey",
   },
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "white",
+    // backgroundColor: "white",
+    backgroundColor: "purple",
     justifyContent: "center",
     padding: 10,
     borderRadius: 5,
     width: "75%",
-    marginVertical: 10,
+    marginTop: 10,
   },
 
   timelimeTitle: {
@@ -191,22 +208,23 @@ const styles = StyleSheet.create({
     //marginVertical: 8,
     marginHorizontal: 10,
     flexDirection: "column",
-    borderColor: "black",
+    borderColor: "#353036",
     borderStyle: "solid",
-    borderWidth: 2,
+    borderWidth: 1,
     height: 100,
     display: "flex",
     flex: 1,
-    borderRadius: 2,
+    borderRadius: 4,
   },
   eventHeaderContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    flex: 1.4,
-    borderBottomWidth: 2,
+    flex: 1.2,
+    borderBottomWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 8,
+    backgroundColor: "#f5cdf7",
   },
   eventTextHeader: {
     fontSize: 18,
@@ -219,13 +237,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   eventDescriptionConmtainer: {
-    // backgroundColor: "lightgreen",
+    //backgroundColor: "lightgreen",
     flex: 7,
   },
   eventMoreDetailsContainer: {
     //backgroundColor: "pink",
     flex: 1,
-    borderLeftWidth: 2,
+    borderLeftWidth: 1,
     borderColor: "#5e747f",
     paddingLeft: 8,
   },
