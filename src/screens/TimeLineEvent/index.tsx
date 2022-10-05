@@ -25,7 +25,9 @@ import {
   createEvent,
   Events,
   showEventDetailsById,
+  showImageById,
 } from "../../requests/events";
+import { CommonActions } from "@react-navigation/native";
 
 type FormEventData = {
   description: string;
@@ -59,6 +61,9 @@ const TimeLineEvent = ({ route, navigation }: any) => {
     type: "",
     name: "",
   });
+  const [editImg, setEditImg] = useState(null);
+
+  console.log("nav->", navigation);
 
   const listEvents = async () => {
     const events = await fetchEventType();
@@ -73,10 +78,15 @@ const TimeLineEvent = ({ route, navigation }: any) => {
 
     if (details) {
       setEventDetails(details);
-      // if (details.pictures) {
-      //   showImage(details.pictures);
-      // }
+      if (details.pictures) {
+        showImage(details.pictures);
+      }
     }
+  };
+
+  const showImage = async (imageId: string) => {
+    const img = await showImageById(imageId);
+    setEditImg("data:image/png;base64," + img);
   };
 
   const getPickerValues = (): Array<any> => {
@@ -125,7 +135,15 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       picture: image as any,
     });
 
-    navigation.goBack();
+    //navigation .goBack();
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: "Vehicle",
+        params: {
+          needToReload: true,
+        },
+      })
+    );
   };
 
   const onHandlePickImage = async () => {
@@ -262,7 +280,9 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                         }}
                       >
                         <Image
-                          source={require("../Garage/noImageFound.png")}
+                          source={{
+                            uri: editImg && editImg,
+                          }}
                           resizeMethod="scale"
                           resizeMode="cover"
                           style={styles.itemImage}
@@ -331,6 +351,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                         );
                         setValue("title", eventDetails.title);
                         setValue("eventDate", new Date(eventDetails.date));
+                        setImage({ ...image, uri: editImg });
                       }}
                     >
                       <FontAwesome name="edit" size={24} color="white" />

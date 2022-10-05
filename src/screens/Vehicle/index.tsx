@@ -22,7 +22,8 @@ type Data = {
 };
 
 const Dashboard = ({ route, navigation }: any) => {
-  const { vehicleId } = route?.params;
+  const { vehicleId, needToReload } = route?.params;
+
   const isViewMode = true;
   const [vehicleData, setVehicleData] = useState<Vehicle>(null);
   const [events, setEvents] = useState<Events[]>(null);
