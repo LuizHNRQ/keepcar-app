@@ -63,8 +63,6 @@ const TimeLineEvent = ({ route, navigation }: any) => {
   });
   const [editImg, setEditImg] = useState(null);
 
-  console.log("nav->", navigation);
-
   const listEvents = async () => {
     const events = await fetchEventType();
 
@@ -342,6 +340,8 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     <TouchableOpacity
                       style={styles.imgEdit}
                       onPress={() => {
+                        console.log("EVDT->", eventDetails);
+
                         setEditMode(false);
                         setValue("description", eventDetails.description);
                         setValue("km", eventDetails.km.toString());
@@ -385,25 +385,28 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                   <Controller
                     control={control}
                     name="eventType"
-                    render={({ field: { onChange, value } }) => (
-                      <DropDownPicker
-                        style={{ ...styles.input, marginLeft: 40 }}
-                        placeholder="Selecione o tipo de registro"
-                        placeholderStyle={styles.dropdownPlaceholder}
-                        open={listOpen}
-                        setOpen={() => setListOpen(!listOpen)}
-                        items={getPickerValues()}
-                        value={value}
-                        setValue={(item) => onChange(item(item.name))}
-                        dropDownContainerStyle={{
-                          //backgroundColor: "grey",
-                          borderColor: "purple",
-                          width: "80%",
-                          marginLeft: 40,
-                        }}
-                        listMode="SCROLLVIEW"
-                      />
-                    )}
+                    render={({ field: { onChange, value } }) => {
+                      console.log("valueee->", value);
+                      return (
+                        <DropDownPicker
+                          style={{ ...styles.input, marginLeft: 40 }}
+                          placeholder="Selecione o tipo de registro"
+                          placeholderStyle={styles.dropdownPlaceholder}
+                          open={listOpen}
+                          setOpen={() => setListOpen(!listOpen)}
+                          items={getPickerValues()}
+                          value={value}
+                          setValue={(item) => onChange(item(item.name))}
+                          dropDownContainerStyle={{
+                            //backgroundColor: "grey",
+                            borderColor: "purple",
+                            width: "80%",
+                            marginLeft: 40,
+                          }}
+                          listMode="SCROLLVIEW"
+                        />
+                      );
+                    }}
                     rules={{
                       required: {
                         value: true,

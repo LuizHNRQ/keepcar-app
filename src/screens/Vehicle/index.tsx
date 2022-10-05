@@ -2,15 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   TouchableOpacity,
   FlatList,
 } from "react-native";
 import { EventRecord, Vehicle } from "../../contexts/vehicles";
-import { fetchVehicleById } from "../../requests/vehicles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 import { Entypo } from "@expo/vector-icons";
 
@@ -110,6 +109,26 @@ const Dashboard = ({ route, navigation }: any) => {
       ) : (
         <View style={{ marginTop: 0, alignItems: "center", flex: 1 }}>
           <View style={styles.headerContainer}>
+            <View style={styles.configurationView}>
+              <TouchableOpacity style={styles.headerBtn}>
+                <AntDesign
+                  name="edit"
+                  size={18}
+                  color="#353036"
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={{ color: "#353036" }}>Editar Veículo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.headerBtn}>
+                <Text style={{ color: "#353036" }}>Compartilhar</Text>
+                <AntDesign
+                  name="sharealt"
+                  size={18}
+                  color="#353036"
+                  style={{ marginLeft: 10 }}
+                />
+              </TouchableOpacity>
+            </View>
             <View style={styles.vehicleHeader}>
               <Text style={styles.header}>
                 {`${vehicleData.maker.toUpperCase()} ${vehicleData.model.toUpperCase()}`}
@@ -127,7 +146,11 @@ const Dashboard = ({ route, navigation }: any) => {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.timelimeTitle}>Linha do tempo</Text>
+          <Text style={styles.timelimeTitle}>
+            {events?.length === 0
+              ? "Adicione eventos para visualizar aqui"
+              : "Linha do tempo"}
+          </Text>
           <View style={styles.cardContainer}>
             <FlatList
               data={events}
@@ -256,6 +279,25 @@ const styles = StyleSheet.create({
     marginLeft: "12%",
     justifyContent: "center",
     marginBottom: 8,
+  },
+  //config
+  configurationView: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  headerBtn: {
+    backgroundColor: "#8fcddb",
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 5,
+    width: "42%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
   },
 });
 
