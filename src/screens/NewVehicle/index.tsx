@@ -2,16 +2,31 @@ import useAxios from "axios-hooks";
 import React, { useCallback, useState } from "react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { useVehicle } from "../../contexts/vehicles";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  SafeAreaView,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { FontAwesome } from "@expo/vector-icons";
 
-import { useAuth } from "../../contexts/auth";
+import { postVehicle } from "../../requests/vehicles";
 
 type FormEventData = {
-  company: string;
-  model: string;
+  makerId: string;
+  modelId: string;
   year: string;
+  plate: string;
+  purchaseYear: string;
+  km: string;
+  nickname: string;
 };
 
 type ApiResponse = {
@@ -26,16 +41,10 @@ type ModelResponse = {
 
 type ItemOption = { label: string; value: string };
 
-const NewVehicle = () => {
+const NewVehicle = ({ route, navigation }: any) => {
+  const { fetchVehicles } = useVehicle();
   const fipeUrl = "https://parallelum.com.br/fipe/api/v1";
 
-  const [genderOpen, setGenderOpen] = useState(false);
-  const [genderValue, setGenderValue] = useState(null);
-  const [gender, setGender] = useState([
-    { label: "Male", value: "male" },
-    { label: "Female", value: "female" },
-    { label: "Prefer Not to Say", value: "neutral" },
-  ]);
   const [brandOpen, setBrandOpen] = useState(false);
   const [brandSelected, setBrandSelected] = useState(null);
   const [brands, setBrands] = useState<ItemOption[]>([]);
@@ -88,8 +97,30 @@ const NewVehicle = () => {
     setModelOpen(false);
   }, []);
 
-  const onSubmit = (data) => {
-    console.log(data, "data");
+  const onSubmit = async (data: FormEventData) => {
+    const vehicleData = {
+      maker: brands.find((b) => b.value === data.makerId).label,
+      model: models.find((m) => m.value === data.modelId).label,
+      year: data.year.substring(0, 4),
+      plate: data.plate,
+      color: "Branco",
+      km: data.km,
+      purchaseYear: data.purchaseYear,
+      userId: 1,
+      makerId: data.makerId.toString(),
+      modelId: data.modelId.toString(),
+      nickname: data.nickname,
+    };
+    console.log("data", data);
+    console.log("data ATT->", vehicleData);
+
+    try {
+      await postVehicle(vehicleData);
+      await fetchVehicles();
+      navigation.goBack();
+    } catch (error) {
+      console.log("erru 344", error);
+    }
   };
 
   const {
@@ -99,9 +130,13 @@ const NewVehicle = () => {
     formState: { errors },
   } = useForm<FormEventData>({
     defaultValues: {
-      company: "",
-      model: "",
+      makerId: "",
+      modelId: "",
       year: "",
+      plate: "",
+      purchaseYear: "",
+      km: "",
+      nickname: "",
     },
   });
 
@@ -111,119 +146,198 @@ const NewVehicle = () => {
 
   useEffect(() => {
     if (brandSelected) {
-      console.log("BRAND->", brandSelected);
+      //console.log("BRAND->", brandSelected);
       fetchModels();
     }
   }, [brandSelected]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <Text>New vehicles 123</Text>
-      <View>
-        <Text>Company</Text>
-        <Controller
-          name="company"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <View
-              style={{
-                ...styles.dropdownCompany,
-                height: brandOpen ? 250 : 50,
-              }}
-            >
-              <DropDownPicker
-                style={{ ...styles.dropdown }}
-                open={brandOpen}
-                value={brandSelected}
-                setOpen={setBrandOpen}
-                setValue={setBrandSelected}
-                items={brands}
-                setItems={setBrands}
-                placeholder="Select Company"
-                placeholderStyle={styles.placeholderStyles}
-                loading={loadingBrand}
-                activityIndicatorColor="#5188E3"
-                searchable={true}
-                searchPlaceholder="Search your company here..."
-                onOpen={onBrandOpen}
-                onChangeValue={onChange}
+    <SafeAreaView>
+      <ScrollView>
+        <TouchableWithoutFeedback
+          style={{ flex: 1 }}
+          //onPress={() => setListOpen(false)}
+        >
+          <View style={{ flex: 1 }}>
+            <Text>New vehicles 123</Text>
+            <View>
+              <Text style={styles.label}>Company</Text>
+              <Controller
+                name="makerId"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View
+                    style={{
+                      ...styles.dropdownCompany,
+                      height: brandOpen ? 250 : 50,
+                    }}
+                  >
+                    <DropDownPicker
+                      style={{ ...styles.dropdown }}
+                      open={brandOpen}
+                      value={brandSelected}
+                      setOpen={setBrandOpen}
+                      setValue={setBrandSelected}
+                      items={brands}
+                      setItems={setBrands}
+                      placeholder="Select Company"
+                      placeholderStyle={styles.placeholderStyles}
+                      loading={loadingBrand}
+                      activityIndicatorColor="#5188E3"
+                      searchable={true}
+                      searchPlaceholder="Search your company here..."
+                      onOpen={onBrandOpen}
+                      onChangeValue={onChange}
+                      listMode="SCROLLVIEW"
+                    />
+                  </View>
+                )}
               />
             </View>
-          )}
-        />
-      </View>
-      <View>
-        <Text>Modelo</Text>
-        <Controller
-          name="model"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <View
-              style={{
-                ...styles.dropdownCompany,
-                height: modelOpen ? 250 : 50,
-              }}
-            >
-              <DropDownPicker
-                style={styles.dropdown}
-                open={modelOpen}
-                value={modelSelected}
-                setOpen={setModelOpen}
-                setValue={setModelSelected}
-                items={models}
-                setItems={setModels}
-                placeholder="Selecione o modelo"
-                placeholderStyle={styles.placeholderStyles}
-                loading={loadingModel}
-                activityIndicatorColor="#5188E3"
-                searchable={true}
-                searchPlaceholder="Pesquise o modelo aqui..."
-                onOpen={onModelOpen}
-                onChangeValue={onChange}
-                disabled={!brandSelected}
+            <View>
+              <Text style={styles.label}>Modelo</Text>
+              <Controller
+                name="modelId"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View
+                    style={{
+                      ...styles.dropdownCompany,
+                      height: modelOpen ? 250 : 50,
+                    }}
+                  >
+                    <DropDownPicker
+                      style={styles.dropdown}
+                      open={modelOpen}
+                      value={modelSelected}
+                      setOpen={setModelOpen}
+                      setValue={setModelSelected}
+                      items={models}
+                      setItems={setModels}
+                      placeholder="Selecione o modelo"
+                      placeholderStyle={styles.placeholderStyles}
+                      loading={loadingModel}
+                      activityIndicatorColor="#5188E3"
+                      searchable={true}
+                      searchPlaceholder="Pesquise o modelo aqui..."
+                      onOpen={onModelOpen}
+                      onChangeValue={onChange}
+                      disabled={!brandSelected}
+                      listMode="SCROLLVIEW"
+                    />
+                  </View>
+                )}
               />
             </View>
-          )}
-        />
-      </View>
-      <View>
-        <Text>Ano</Text>
-        <Controller
-          name="year"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <View
-              style={{
-                ...styles.dropdownCompany,
-                height: yearOpen ? 250 : 50,
-              }}
-            >
-              <DropDownPicker
-                style={styles.dropdown}
-                open={yearOpen}
-                value={yearSelected}
-                setOpen={setYearOpen}
-                setValue={setYearSelected}
-                items={years}
-                setItems={setYears}
-                placeholder="Selecione o ano"
-                placeholderStyle={styles.placeholderStyles}
-                loading={loadingModel}
-                activityIndicatorColor="#5188E3"
-                onOpen={onYearOpen}
-                onChangeValue={onChange}
-                disabled={!brandSelected}
+            <View>
+              <Text style={styles.label}>Ano</Text>
+              <Controller
+                name="year"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <View
+                    style={{
+                      ...styles.dropdownCompany,
+                      height: yearOpen ? 250 : 50,
+                    }}
+                  >
+                    <DropDownPicker
+                      style={styles.dropdown}
+                      open={yearOpen}
+                      value={yearSelected}
+                      setOpen={setYearOpen}
+                      setValue={setYearSelected}
+                      items={years}
+                      setItems={setYears}
+                      placeholder="Selecione o ano"
+                      placeholderStyle={styles.placeholderStyles}
+                      loading={loadingModel}
+                      activityIndicatorColor="#5188E3"
+                      onOpen={onYearOpen}
+                      onChangeValue={onChange}
+                      disabled={!brandSelected}
+                      listMode="SCROLLVIEW"
+                    />
+                  </View>
+                )}
               />
             </View>
-          )}
-        />
-      </View>
+            <View>
+              <Text style={styles.label}>Placa</Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{ ...styles.input }}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="plate"
+                //rules={{ required: true }}
+              />
+            </View>
+            <View>
+              <Text style={styles.label}>Ano de compra</Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{ ...styles.input }}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="purchaseYear"
+                //rules={{ required: true }}
+              />
+            </View>
+            <View>
+              <Text style={styles.label}>Km atual</Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{ ...styles.input }}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="km"
+                //rules={{ required: true }}
+              />
+            </View>
+            <View>
+              <Text style={styles.label}>Apelido</Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{ ...styles.input }}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="nickname"
+                //rules={{ required: true }}
+              />
+            </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <FontAwesome name="save" size={24} color="white" />
-        <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
-      </TouchableOpacity>
-    </View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmit(onSubmit)}
+            >
+              <FontAwesome name="save" size={24} color="white" />
+              <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -248,6 +362,20 @@ const styles = StyleSheet.create({
     width: "75%",
     backgroundColor: "purple",
     marginTop: 20,
+  },
+  label: {
+    alignSelf: "flex-start",
+    margin: 20,
+    marginLeft: "10%",
+    fontSize: 20,
+  },
+  input: {
+    backgroundColor: "white",
+    height: 50,
+    padding: 10,
+    borderRadius: 4,
+    width: "80%",
+    borderColor: "white",
   },
 });
 

@@ -38,7 +38,7 @@ export interface Vehicle {
 
 interface VehicleContextData {
   vehicles: Vehicle[] | null;
-  //   fetchVehicles: () => Promise<void>;
+  fetchVehicles: () => Promise<void>;
   loading: boolean;
 }
 
@@ -80,7 +80,7 @@ export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [user]);
 
   return (
-    <VehicleContext.Provider value={{ vehicles, loading }}>
+    <VehicleContext.Provider value={{ vehicles, loading, fetchVehicles }}>
       {children}
     </VehicleContext.Provider>
   );
