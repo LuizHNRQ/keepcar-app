@@ -24,7 +24,7 @@ const Dashboard: React.FC = ({ navigation }: any) => {
   const { vehicles } = useVehicle();
 
   const handleNewVehicle = () => {
-    console.log("novo veiculo");
+    navigation.navigate("NewVehicle");
   };
 
   const handleSearch = () => {

@@ -10,6 +10,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import Dashboard from "../screens/dashboard";
 import Garage from "../screens/Garage";
 import Vehicle from "../screens/Vehicle";
+import NewVehicle from "../screens/NewVehicle";
 import TimeLineEvent from "../screens/TimeLineEvent";
 import Profile from "../screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -34,9 +35,16 @@ const Logged: React.FC = () => {
         <HomeStack.Screen
           name="Vehicle"
           options={{
-            title: "Veículo",
+            title: "Detalhes",
           }}
           component={Vehicle}
+        />
+        <HomeStack.Screen
+          name="NewVehicle"
+          options={{
+            title: "Veículo",
+          }}
+          component={NewVehicle}
         />
         <HomeStack.Screen
           name="timelineEvent"
@@ -98,7 +106,11 @@ const Logged: React.FC = () => {
           tabBarStyle: ((route) => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? "";
             //console.log(routeName);
-            if (routeName === "timelineEvent" || routeName === "Vehicle") {
+            if (
+              routeName === "timelineEvent" ||
+              routeName === "Vehicle" ||
+              routeName === "newVehicle"
+            ) {
               return { display: "none" };
             }
             return;
