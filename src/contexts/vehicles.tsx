@@ -9,6 +9,7 @@ import * as vehicle from "../requests/vehicles";
 
 import { Alert } from "react-native";
 import { useAuth } from "./auth";
+import { showImageById } from "../requests/events";
 
 export interface EventRecord {
   id: number;
@@ -34,6 +35,7 @@ export interface Vehicle {
   updatedAt: string;
   userId?: number;
   events?: EventRecord[];
+  photo?: string;
 }
 
 interface VehicleContextData {
@@ -75,7 +77,20 @@ export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({
       return Alert.alert("ERRO 22", "deu erro 22");
     }
 
-    setVehicles(data);
+    const vehiclesWithImage = await Promise.all(
+      data.map(async (vehicle) => {
+        if (vehicle.photo) {
+          const img = await showImageById(vehicle.photo);
+          return {
+            ...vehicle,
+            photo: "data:image/png;base64," + img,
+          };
+        }
+        return vehicle;
+      })
+    );
+
+    setVehicles(vehiclesWithImage);
     setLoading(false);
   }, [user]);
 

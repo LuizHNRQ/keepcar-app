@@ -42,16 +42,23 @@ const Dashboard: React.FC = ({ navigation }: any) => {
       <View style={styles.item}>
         <View style={styles.itemImageView}>
           <Image
-            source={require("./noImageFound.png")}
+            source={
+              vehicle.photo !== ""
+                ? { uri: vehicle.photo }
+                : require("./noImageFound.png")
+            }
             resizeMethod="scale"
             resizeMode="cover"
             style={styles.itemImage}
           />
         </View>
         <View style={styles.itemTextView}>
-          <Text>{`${vehicle.maker.toUpperCase()} ${vehicle.model.toUpperCase()} - ${
-            vehicle.nickname
-          }`}</Text>
+          {vehicle.nickname !== "" ? (
+            <Text>{`${vehicle.nickname}`}</Text>
+          ) : (
+            <Text>{`${vehicle.maker.toUpperCase()} ${vehicle.model.toUpperCase()}`}</Text>
+          )}
+
           <Text style={styles.title}>{vehicle.plate.toUpperCase()}</Text>
           <Text>Eventos cadastrados: {vehicle?.events?.length}</Text>
         </View>

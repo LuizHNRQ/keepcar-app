@@ -3,6 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useVehicle } from "../../contexts/vehicles";
+import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -13,11 +14,13 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { postVehicle } from "../../requests/vehicles";
+import { postVehicle, postVehicleWithImage } from "../../requests/vehicles";
 
 type FormEventData = {
   makerId: string;
@@ -41,6 +44,13 @@ type ModelResponse = {
 
 type ItemOption = { label: string; value: string };
 
+type ImageType = {
+  uri: string;
+  filename: string;
+  type: string;
+  name: string;
+};
+
 const NewVehicle = ({ route, navigation }: any) => {
   const { fetchVehicles } = useVehicle();
   const fipeUrl = "https://parallelum.com.br/fipe/api/v1";
@@ -54,6 +64,13 @@ const NewVehicle = ({ route, navigation }: any) => {
   const [yearOpen, setYearOpen] = useState(false);
   const [yearSelected, setYearSelected] = useState(null);
   const [years, setYears] = useState<ItemOption[]>([]);
+
+  const [image, setImage] = useState<ImageType>({
+    uri: null,
+    filename: "",
+    type: "",
+    name: "",
+  });
 
   const [{ loading: loadingBrand }, getBrands] = useAxios<ApiResponse[]>(
     {
@@ -97,6 +114,45 @@ const NewVehicle = ({ route, navigation }: any) => {
     setModelOpen(false);
   }, []);
 
+  const onHandlePickImage = async () => {
+    try {
+      const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
+
+      if (!granted) {
+        const { granted: requestGranted } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!requestGranted) {
+          console.log("Precisamos da sua permissão para abrir suas fotos :");
+          return;
+        }
+      }
+
+      const result: any = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.2,
+      });
+
+      if (!result.cancelled) {
+        const localUri = result.uri;
+        const filename = localUri.split("/").pop()!;
+
+        const match = /\.(\w+)$/.exec(filename!);
+        const type = match ? `image/${match[1]}` : `image`;
+        setImage({
+          uri: localUri.replace("file://", ""),
+          filename,
+          type,
+          name: filename,
+        });
+      }
+    } catch (err) {
+      console.log("Erro ao abrir suas fotos");
+    }
+  };
+
   const onSubmit = async (data: FormEventData) => {
     const vehicleData = {
       maker: brands.find((b) => b.value === data.makerId).label,
@@ -115,7 +171,11 @@ const NewVehicle = ({ route, navigation }: any) => {
     console.log("data ATT->", vehicleData);
 
     try {
-      await postVehicle(vehicleData);
+      if (image.uri) {
+        await postVehicleWithImage(vehicleData, image as any);
+      } else {
+        await postVehicle(vehicleData);
+      }
       await fetchVehicles();
       navigation.goBack();
     } catch (error) {
@@ -327,6 +387,40 @@ const NewVehicle = ({ route, navigation }: any) => {
               />
             </View>
 
+            {!!!image.uri && (
+              <TouchableOpacity
+                style={{ ...styles.button, backgroundColor: "orange" }}
+                onPress={onHandlePickImage}
+              >
+                <FontAwesome name="file-photo-o" size={24} color="black" />
+                <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
+              </TouchableOpacity>
+            )}
+
+            {image.uri && (
+              <View style={styles.imageContainer}>
+                <View style={styles.imageOuter}>
+                  <Image
+                    source={image && { uri: image?.uri }}
+                    style={styles.img}
+                  />
+                </View>
+                <View style={styles.textOuter}>
+                  <TouchableOpacity
+                    style={{ ...styles.button }}
+                    onPress={onHandlePickImage}
+                  >
+                    <MaterialCommunityIcons
+                      name="image-edit-outline"
+                      size={28}
+                      color="black"
+                    />
+                    <Text style={{ marginLeft: 10 }}>Alterar Arquivo</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
             <TouchableOpacity
               style={styles.button}
               onPress={handleSubmit(onSubmit)}
@@ -377,6 +471,27 @@ const styles = StyleSheet.create({
     width: "80%",
     borderColor: "white",
   },
+  imageContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
+    width: "75%",
+    padding: 5,
+    borderColor: "grey",
+    borderWidth: 2,
+    marginVertical: 10,
+    borderRadius: 4,
+  },
+  imageOuter: {
+    flex: 1,
+  },
+  textOuter: {
+    flex: 3,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  img: { width: 80, height: 80, resizeMode: "cover" },
 });
 
 export default NewVehicle;

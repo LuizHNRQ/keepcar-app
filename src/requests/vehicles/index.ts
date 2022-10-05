@@ -60,3 +60,59 @@ export const postVehicle = async (vehicle: VehicleData) => {
     console.log("error 100939", error);
   }
 };
+
+type ImageType = {
+  uri: string;
+  filename: string;
+  type: string;
+  name: string;
+};
+
+type vehicleProps = {
+  maker: string;
+  model: string;
+  year: string;
+  plate: string;
+  color: string;
+  km: string;
+  purchaseYear: string;
+  userId: number;
+  makerId: string;
+  modelId: string;
+  nickname: string;
+};
+
+export const postVehicleWithImage = async (
+  vehicle: vehicleProps,
+  photo: ImageType & Blob
+) => {
+  try {
+    const form = new FormData();
+    form.append("file", photo);
+    form.append("maker", vehicle.maker);
+    form.append("model", vehicle.model);
+    form.append("year", vehicle.year);
+    form.append("plate", vehicle.plate);
+    form.append("color", vehicle.color);
+    form.append("km", vehicle.km);
+    form.append("purchaseYear", vehicle.purchaseYear);
+    form.append("userId", vehicle.userId.toString());
+    form.append("makerId", vehicle.makerId);
+    form.append("modelId", vehicle.modelId);
+    form.append("nickname", vehicle.nickname);
+
+    const { data } = await api.post<
+      vehicleProps,
+      AxiosResponse<VehicleResponse[]>
+    >("/vehicles", form, {
+      headers: {
+        "Content-type": "multipart/form-data",
+      },
+      method: "POST",
+    });
+
+    return data;
+  } catch (error) {
+    console.log("error 55355", error);
+  }
+};
