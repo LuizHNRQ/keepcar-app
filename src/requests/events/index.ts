@@ -89,3 +89,31 @@ export const showImageById = async (imageId: string) => {
     console.log("error img 45666", error);
   }
 };
+
+type CustomVehicle = {
+  id: string;
+  maker: string;
+  model: string;
+  year: string;
+  plate: string;
+  updatedAt: string;
+  eventsCount: number;
+  lastEvent: string;
+};
+
+type ApiResponse = {
+  vehicles: CustomVehicle[];
+  events: Events[];
+};
+
+export const fetchDetails = async (userId: string) => {
+  try {
+    console.log("userid->", userId);
+
+    const { data } = await api.get<ApiResponse>(`/eventuser/${userId}`);
+
+    return data;
+  } catch (error) {
+    console.log("error 12129", error);
+  }
+};
