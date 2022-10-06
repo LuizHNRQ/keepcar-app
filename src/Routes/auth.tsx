@@ -1,6 +1,7 @@
 import React from "react";
 import Login from "../screens/Login";
 import Register from "../screens/Register";
+import KeepCar from "../screens/KeepCarId";
 import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
@@ -29,6 +30,11 @@ const Auth = (): JSX.Element => {
         name="Register"
         component={Register}
         options={{ title: "Cadastrar" }}
+      />
+      <Stack.Screen
+        name="KeepCarId"
+        component={KeepCar}
+        options={{ title: "Visualizar veículo" }}
       />
     </Stack.Navigator>
   );

@@ -29,6 +29,7 @@ const Dashboard: React.FC = ({ navigation }: any) => {
 
   const handleSearch = () => {
     console.log("pesquisa");
+    navigation.navigate("KeepCarId");
   };
 
   const handleShowVehicleDetails = (vehicleID: string) => {
@@ -87,7 +88,8 @@ const Dashboard: React.FC = ({ navigation }: any) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <Ionicons name="search" size={24} color="#353036" />
+          {/* <Ionicons name="search" size={24} color="#353036" /> */}
+          <Ionicons name="key-outline" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: "#de722f",
     padding: 10,
     borderRadius: 5,
     width: "15%",

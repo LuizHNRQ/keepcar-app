@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useAuth } from "../../contexts/auth";
+import { Ionicons } from "@expo/vector-icons";
 
 type FormData = {
   email: string;
@@ -95,9 +96,23 @@ const Login = ({ navigation }: any): JSX.Element => {
             {loading ? "Carregando..." : "Login"}
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.button2,
+            marginTop: 10,
+            backgroundColor: "#de722f",
+          }}
+          onPress={() => navigation.navigate("KeepCarId")}
+          disabled={loading}
+        >
+          <Ionicons name="key-outline" size={24} color="white" />
+          <Text style={{ marginLeft: 10, color: "white", fontSize: 18 }}>
+            Tenho um KeepCarId
+          </Text>
+        </TouchableOpacity>
 
         <Button
-          title="Go to Register"
+          title="Não tenho conta..."
           onPress={() => navigation.navigate("Register")}
         />
       </View>

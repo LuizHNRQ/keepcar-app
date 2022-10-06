@@ -13,6 +13,7 @@ import Vehicle from "../screens/Vehicle";
 import NewVehicle from "../screens/NewVehicle";
 import ShareCode from "../screens/ShareCode";
 import EditVehicle from "../screens/EditVehicle";
+import KeepCarId from "../screens/KeepCarId";
 import TimeLineEvent from "../screens/TimeLineEvent";
 import Profile from "../screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -61,6 +62,13 @@ const Logged: React.FC = () => {
             title: "Editar veículo",
           }}
           component={EditVehicle}
+        />
+        <HomeStack.Screen
+          name="KeepCarId"
+          options={{
+            title: "Visualizar veículo",
+          }}
+          component={KeepCarId}
         />
         <HomeStack.Screen
           name="timelineEvent"
