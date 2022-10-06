@@ -138,89 +138,99 @@ const Profile = ({ route, navigation }: RouteParams) => {
   }, [vehicleDetails]);
 
   return (
-    <View style={{ flex: 1, alignItems: "center" }}>
-      <View style={styles.vehicleHeader}>
-        <Text style={styles.header}>
-          {`${vehicleDetails.maker.toUpperCase()} ${vehicleDetails.model.toUpperCase()}`}
-        </Text>
-      </View>
-
-      {!!!editImg?.uri && (
-        <TouchableOpacity
-          style={{ ...styles.button, backgroundColor: "orange" }}
-          onPress={onHandlePickImage}
-        >
-          <FontAwesome name="file-photo-o" size={24} color="black" />
-          <Text style={{ marginLeft: 10 }}>Adicionar Imagem</Text>
-        </TouchableOpacity>
-      )}
-      {editImg?.uri && (
-        <View style={styles.imageContainer}>
-          <View style={styles.imageOuter}>
-            <Image
-              source={editImg && { uri: editImg?.uri }}
-              style={styles.img}
-            />
-          </View>
-          <View style={styles.textOuter}>
-            <TouchableOpacity
-              style={{ ...styles.button }}
-              onPress={onHandlePickImage}
-            >
-              <MaterialCommunityIcons
-                name="image-edit-outline"
-                size={28}
-                color="black"
-              />
-              <Text style={{ marginLeft: 10 }}>Alterar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...styles.button,
-                width: 60,
-                backgroundColor: "lightgreen",
-              }}
-              onPress={handleResetImage}
-            >
-              <MaterialCommunityIcons name="cancel" size={24} color="red" />
-            </TouchableOpacity>
-          </View>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, alignSelf: "center", width: "90%" }}>
+        <View style={styles.vehicleHeader}>
+          <Text style={styles.header}>
+            {`${vehicleDetails.maker.toUpperCase()} ${vehicleDetails.model.toUpperCase()}`}
+          </Text>
         </View>
-      )}
-      <Text>Apelido</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setVehicleNickname}
-        value={vehicleNickname}
-      />
-      <Text>Cor</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setVehicleColor}
-        value={vehicleColor}
-      />
-      <TouchableOpacity
-        style={{
-          ...styles.button,
-          backgroundColor: "purple",
-          marginTop: 20,
-        }}
-        onPress={handleSubmit}
-      >
-        <FontAwesome name="save" size={24} color="white" />
-        <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          ...styles.button,
-          backgroundColor: "red",
-          marginTop: 20,
-        }}
-        onPress={handleDeleteVehicle}
-      >
-        <MaterialCommunityIcons name="delete" size={24} color="white" />
-        <Text style={{ marginLeft: 10, color: "white" }}>Deletar veículo</Text>
-      </TouchableOpacity>
+
+        {!!!editImg?.uri && (
+          <TouchableOpacity
+            style={{ ...styles.button, backgroundColor: "orange" }}
+            onPress={onHandlePickImage}
+          >
+            <FontAwesome name="file-photo-o" size={24} color="black" />
+            <Text style={{ marginLeft: 10 }}>Adicionar Imagem</Text>
+          </TouchableOpacity>
+        )}
+        {editImg?.uri && (
+          <View style={styles.imageContainer}>
+            <View style={styles.imageOuter}>
+              <Image
+                source={editImg && { uri: editImg?.uri }}
+                style={styles.img}
+              />
+            </View>
+            <View style={styles.textOuter}>
+              <TouchableOpacity
+                style={{ ...styles.button }}
+                onPress={onHandlePickImage}
+              >
+                <MaterialCommunityIcons
+                  name="image-edit-outline"
+                  size={28}
+                  color="black"
+                />
+                <Text style={{ marginLeft: 10 }}>Alterar</Text>
+              </TouchableOpacity>
+              {editImg?.filename && (
+                <TouchableOpacity
+                  style={{
+                    ...styles.button,
+                    width: 60,
+                    backgroundColor: "red",
+                  }}
+                  onPress={handleResetImage}
+                >
+                  <MaterialCommunityIcons
+                    name="cancel"
+                    size={24}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+        <Text style={styles.label}>Apelido</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setVehicleNickname}
+          value={vehicleNickname}
+        />
+        <Text style={styles.label}>Cor</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setVehicleColor}
+          value={vehicleColor}
+        />
+        <TouchableOpacity
+          style={{
+            ...styles.button,
+            backgroundColor: "purple",
+            marginTop: 20,
+          }}
+          onPress={handleSubmit}
+        >
+          <FontAwesome name="save" size={24} color="white" />
+          <Text style={{ marginLeft: 10, color: "white" }}>Salvar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.button,
+            backgroundColor: "red",
+            marginTop: 20,
+          }}
+          onPress={handleDeleteVehicle}
+        >
+          <MaterialCommunityIcons name="delete" size={24} color="white" />
+          <Text style={{ marginLeft: 10, color: "white" }}>
+            Deletar veículo
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -229,13 +239,18 @@ const styles = StyleSheet.create({
   vehicleHeader: {
     flexDirection: "row",
     //backgroundColor: "lightgreen",
-    width: "100%",
+    //: "90%",
     alignItems: "center",
     justifyContent: "center",
   },
-  header: { fontSize: 32, fontWeight: "bold" },
+  header: {
+    fontSize: 22,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20,
+  },
   subHeader: {
-    fontSize: 26,
+    fontSize: 20,
   },
   itemImage: {
     backgroundColor: "blue",
@@ -246,31 +261,33 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   imgView: {
-    width: 200,
+    width: 300,
     height: 200,
   },
   input: {
-    width: "80%",
-    backgroundColor: "lightblue",
-    height: 100,
+    //width: "90%",
+    backgroundColor: "white",
+    borderRadius: 5,
+    marginTop: 5,
+    height: 50,
   },
   imageContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     flex: 1,
-    width: "75%",
+    //width: "75%",
     padding: 5,
     borderColor: "grey",
     borderWidth: 2,
     marginVertical: 10,
     borderRadius: 4,
-    maxHeight: 100,
+    maxHeight: 140,
   },
   imageOuter: {
     flex: 1,
   },
   textOuter: {
-    flex: 3,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
@@ -282,9 +299,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 12,
     borderRadius: 5,
-    width: "75%",
+    //width: "75%",
   },
-  img: { width: 80, height: 80, resizeMode: "cover" },
+  img: { width: 160, height: 120, resizeMode: "cover" },
+  label: {
+    marginTop: 20,
+    marginBottom: 5,
+    marginLeft: 0,
+    fontSize: 18,
+  },
 });
 
 export default Profile;
