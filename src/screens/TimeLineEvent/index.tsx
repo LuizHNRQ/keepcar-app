@@ -416,7 +416,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     rules={{
                       required: {
                         value: true,
-                        message: "Please fill out all required fields.",
+                        message: "Selecione o Tipo do registro",
                       },
                     }}
                   />
@@ -438,8 +438,18 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       />
                     )}
                     name="title"
-                    //rules={{ required: true }}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Insira o titúlo para o registro.",
+                      },
+                    }}
                   />
+                  {errors["title"]?.message ? (
+                    <Text style={styles.errorText}>
+                      {errors["title"]?.message}
+                    </Text>
+                  ) : null}
                   <Text style={styles.label}>Quilometragem</Text>
                   <Controller
                     control={control}
@@ -455,8 +465,18 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       />
                     )}
                     name="km"
-                    //rules={{ required: true }}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Insira o km para o registro.",
+                      },
+                    }}
                   />
+                  {errors["km"]?.message ? (
+                    <Text style={styles.errorText}>
+                      {errors["km"]?.message}
+                    </Text>
+                  ) : null}
                   <Text style={styles.label}>Descrição</Text>
                   <Controller
                     control={control}
