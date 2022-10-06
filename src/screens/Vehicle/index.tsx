@@ -21,7 +21,7 @@ type Data = {
 };
 
 const Dashboard = ({ route, navigation }: any) => {
-  const { vehicleId, needToReload } = route?.params;
+  const { vehicleId } = route?.params;
 
   const isViewMode = true;
   const [vehicleData, setVehicleData] = useState<Vehicle>(null);
@@ -108,11 +108,10 @@ const Dashboard = ({ route, navigation }: any) => {
   };
 
   useEffect(() => {
-    console.log("Renderizou", vehicleId);
     if (vehicleId) {
       fetchVehicleData();
     }
-  }, []);
+  }, [route]);
 
   return (
     <View style={styles.container}>

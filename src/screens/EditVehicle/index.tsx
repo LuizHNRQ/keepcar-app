@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import { Vehicle } from "../../contexts/vehicles";
+import { useVehicle, Vehicle } from "../../contexts/vehicles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";
@@ -33,6 +33,7 @@ type RouteParams = {
 
 const Profile = ({ route, navigation }: RouteParams) => {
   const { vehicleDetails } = route?.params;
+  const { fetchVehicles } = useVehicle();
 
   const [editImg, setEditImg] = useState(null);
   const [vehicleNickname, setVehicleNickname] = useState<string>(
@@ -100,7 +101,13 @@ const Profile = ({ route, navigation }: RouteParams) => {
         ? await editVehicleWithImage(vehicleDetails.id, data)
         : await editVehicle(vehicleDetails.id, data);
 
-      console.log("res do put->", res);
+      await fetchVehicles();
+
+      navigation.goBack({
+        params: {
+          vehicleId: vehicleDetails.id,
+        },
+      });
     } catch (error) {
       console.log("erro 5567341111");
     }

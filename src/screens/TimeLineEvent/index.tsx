@@ -28,6 +28,7 @@ import {
   showImageById,
 } from "../../requests/events";
 import { CommonActions } from "@react-navigation/native";
+import { useVehicle } from "../../contexts/vehicles";
 
 type FormEventData = {
   description: string;
@@ -51,6 +52,7 @@ type ImageType = {
 
 const TimeLineEvent = ({ route, navigation }: any) => {
   const { eventId, vehicleId } = route?.params || {};
+  const { fetchVehicles } = useVehicle();
   const [editMode, setEditMode] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [selectEventType, setSelectEventType] = useState<EventsType[]>([]);
@@ -118,9 +120,10 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       ...data,
       vehicleId,
       eventDate: dayjs(data.eventDate).toISOString(),
-      picture: image as any,
+      ...(image?.filename && { picture: image as any }),
     });
 
+    await fetchVehicles();
     //navigation .goBack();
     navigation.dispatch(
       CommonActions.navigate({
@@ -375,7 +378,6 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     control={control}
                     name="eventType"
                     render={({ field: { onChange, value } }) => {
-                      console.log("valueee->", value);
                       return (
                         <DropDownPicker
                           style={{ ...styles.input, marginLeft: 40 }}
