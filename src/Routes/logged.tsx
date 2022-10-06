@@ -12,6 +12,7 @@ import Garage from "../screens/Garage";
 import Vehicle from "../screens/Vehicle";
 import NewVehicle from "../screens/NewVehicle";
 import ShareCode from "../screens/ShareCode";
+import EditVehicle from "../screens/EditVehicle";
 import TimeLineEvent from "../screens/TimeLineEvent";
 import Profile from "../screens/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -53,6 +54,13 @@ const Logged: React.FC = () => {
             title: "Compartilhar",
           }}
           component={ShareCode}
+        />
+        <HomeStack.Screen
+          name="EditVehicle"
+          options={{
+            title: "Editar veículo",
+          }}
+          component={EditVehicle}
         />
         <HomeStack.Screen
           name="timelineEvent"
@@ -118,7 +126,8 @@ const Logged: React.FC = () => {
               routeName === "timelineEvent" ||
               routeName === "Vehicle" ||
               routeName === "newVehicle" ||
-              routeName === "ShareCode"
+              routeName === "ShareCode" ||
+              routeName === "EditVehicle"
             ) {
               return { display: "none" };
             }

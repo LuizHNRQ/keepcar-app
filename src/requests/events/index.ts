@@ -9,6 +9,7 @@ type EventValues = {
   picture: ImageType & Blob;
   title: string;
   km: string;
+  vehicleId: string;
 };
 
 type ImageType = {
@@ -27,7 +28,7 @@ export const createEvent = async (values: EventValues) => {
     form.append("eventTypeId", values.eventType);
     form.append("km", values.km);
     form.append("date", values.eventDate);
-    form.append("vehicleId", "A123AA");
+    form.append("vehicleId", values.vehicleId);
 
     const { data } = await api.post<EventValues, AxiosResponse<any>>(
       "/event",

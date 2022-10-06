@@ -37,21 +37,24 @@ const Dashboard = ({ route, navigation }: any) => {
   };
 
   const handleNewEvent = () => {
-    console.log("Novo evento");
-    navigation.navigate("timelineEvent");
+    navigation.navigate("timelineEvent", {
+      vehicleId: vehicleId,
+    });
   };
 
   const handleShareCode = () => {
-    console.log("Novo evento");
     navigation.navigate("ShareCode");
   };
 
   const handleEditVehicle = () => {
-    console.log("Edit veiculo");
+    navigation.navigate("EditVehicle", {
+      vehicleDetails: vehicleData,
+      vehicleId: vehicleId,
+    });
   };
 
   const handleDetailsEvent = (eventId: number) => {
-    console.log("Novo evento", eventId);
+    console.log("Editar evento", eventId);
     navigation.navigate("timelineEvent", {
       eventId: eventId,
     });

@@ -50,7 +50,7 @@ type ImageType = {
 };
 
 const TimeLineEvent = ({ route, navigation }: any) => {
-  const { eventId } = route?.params || {};
+  const { eventId, vehicleId } = route?.params || {};
   const [editMode, setEditMode] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [selectEventType, setSelectEventType] = useState<EventsType[]>([]);
@@ -114,21 +114,9 @@ const TimeLineEvent = ({ route, navigation }: any) => {
   });
 
   const onSubmit = async (data: FormEventData) => {
-    console.log("Enviado->", {
-      ...data,
-      eventDate: dayjs(data.eventDate).format("DD/MM/YYYY"),
-      image: image,
-    });
-    Alert.alert(
-      "Enviado",
-      JSON.stringify({
-        ...data,
-        eventDate: dayjs(data.eventDate).format("DD/MM/YYYY"),
-      })
-    );
-
     await createEvent({
       ...data,
+      vehicleId,
       eventDate: dayjs(data.eventDate).toISOString(),
       picture: image as any,
     });
@@ -139,6 +127,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
         name: "Vehicle",
         params: {
           needToReload: true,
+          vehicleId: vehicleId,
         },
       })
     );
