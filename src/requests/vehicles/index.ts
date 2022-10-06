@@ -116,3 +116,53 @@ export const postVehicleWithImage = async (
     console.log("error 55355", error);
   }
 };
+
+type Fields = {
+  nickname: string;
+  color: string;
+};
+
+export const editVehicle = async (vehicleId: string, vehicle: Fields) => {
+  try {
+    const { data } = await api.put<VehicleResponse[]>(
+      `/vehicle/${vehicleId}`,
+      vehicle
+    );
+
+    return data;
+  } catch (error) {
+    console.log("error 777939", error);
+  }
+};
+
+type FieldsWithImg = {
+  nickname: string;
+  color: string;
+  photo: ImageType & Blob;
+};
+
+export const editVehicleWithImage = async (
+  vehicleId: string,
+  vehicle: FieldsWithImg
+) => {
+  try {
+    const form = new FormData();
+    form.append("file", vehicle.photo);
+    form.append("color", vehicle.color);
+    form.append("nickname", vehicle.nickname);
+
+    const { data } = await api.put<
+      vehicleProps,
+      AxiosResponse<VehicleResponse[]>
+    >(`/vehicle/${vehicleId}`, form, {
+      headers: {
+        "Content-type": "multipart/form-data",
+      },
+      method: "PUT",
+    });
+
+    return data;
+  } catch (error) {
+    console.log("error 11355", error);
+  }
+};

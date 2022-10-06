@@ -20,6 +20,7 @@ import {
   showEventDetailsById,
   showImageById,
 } from "../../requests/events";
+import { editVehicle, editVehicleWithImage } from "../../requests/vehicles";
 
 type RouteParams = {
   route: {
@@ -87,12 +88,22 @@ const Profile = ({ route, navigation }: RouteParams) => {
     });
   };
 
-  const handleSubmit = () => {
-    console.log("envio->", {
+  const handleSubmit = async () => {
+    const data = {
       ...(editImg?.filename && { photo: editImg }),
       nickname: vehicleNickname,
       color: vehicleColor,
-    });
+    };
+
+    try {
+      const res = editImg?.filename
+        ? await editVehicleWithImage(vehicleDetails.id, data)
+        : await editVehicle(vehicleDetails.id, data);
+
+      console.log("res do put->", res);
+    } catch (error) {
+      console.log("erro 5567341111");
+    }
   };
 
   const handleResetImage = () => {
