@@ -259,25 +259,35 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                           {eventDetails.description}
                         </Text>
                       </View>
-                      <View style={styles.lineDetails}>
-                        <Text style={styles.titleEdit}>Imagem:</Text>
-                      </View>
-                      <View
-                        style={{
-                          ...styles.lineDetails,
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          source={{
-                            uri: editImg && editImg,
-                          }}
-                          resizeMethod="scale"
-                          resizeMode="cover"
-                          style={styles.itemImage}
-                        />
-                      </View>
+                      <View style={styles.lineDetails}></View>
+                      {editImg && (
+                        <>
+                          <Text style={styles.titleEdit}>Imagem:</Text>
+
+                          <View
+                            style={{
+                              ...styles.lineDetails,
+                              flexDirection: "column",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Image
+                              // source={{
+                              //   uri: editImg && editImg,
+                              // }}
+                              source={
+                                editImg
+                                  ? { uri: editImg }
+                                  : require("../Garage/noImageFound.png")
+                              }
+                              resizeMethod="scale"
+                              resizeMode="cover"
+                              style={styles.itemImage}
+                            />
+                          </View>
+                        </>
+                      )}
+
                       <View style={styles.lineDetails}>
                         <Text
                           style={{
@@ -300,7 +310,12 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                           )}
                         </Text>
                       </View>
-                      <View style={styles.lineDetails}>
+                      <View
+                        style={{
+                          ...styles.lineDetails,
+                          marginBottom: !editImg && 200,
+                        }}
+                      >
                         <Text
                           style={{
                             ...styles.textEdit,
