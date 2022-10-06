@@ -10,7 +10,7 @@ const Profile: React.FC = () => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <TouchableOpacity
-        style={{ ...styles.button, backgroundColor: "orange" }}
+        style={{ ...styles.button, backgroundColor: "#c43d3d" }}
         onPress={signOut}
       >
         <Text style={{ marginRight: 10 }}>Deslogar</Text>

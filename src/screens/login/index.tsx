@@ -100,13 +100,14 @@ const Login = ({ navigation }: any): JSX.Element => {
           style={{
             ...styles.button2,
             marginTop: 10,
-            backgroundColor: "#de722f",
+            // backgroundColor: "#de722f",
+            backgroundColor: "orange",
           }}
           onPress={() => navigation.navigate("KeepCarId")}
           disabled={loading}
         >
-          <Ionicons name="key-outline" size={24} color="white" />
-          <Text style={{ marginLeft: 10, color: "white", fontSize: 18 }}>
+          <Ionicons name="key-outline" size={24} color="black" />
+          <Text style={{ marginLeft: 10, color: "black", fontSize: 18 }}>
             Tenho um KeepCarId
           </Text>
         </TouchableOpacity>
