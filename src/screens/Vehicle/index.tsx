@@ -147,7 +147,7 @@ const Dashboard = ({ route, navigation }: any) => {
               </TouchableOpacity>
             </View>
             <View style={styles.vehicleHeader}>
-              <Text style={styles.header}>
+              <Text style={styles.header} numberOfLines={2}>
                 {`${vehicleData.maker.toUpperCase()} ${vehicleData.model.toUpperCase()}`}
               </Text>
             </View>
@@ -221,12 +221,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  header: { fontSize: 32, fontWeight: "bold" },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginHorizontal: 10,
+    textAlign: "center",
+  },
   subHeader: {
-    fontSize: 26,
+    fontSize: 22,
   },
   headerContainer: {
-    flex: 1,
+    flex: 1.2,
     //ackgroundColor: "lightblue",
     width: "100%",
     alignItems: "center",
