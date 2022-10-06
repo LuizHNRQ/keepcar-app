@@ -41,6 +41,15 @@ const Dashboard = ({ route, navigation }: any) => {
     navigation.navigate("timelineEvent");
   };
 
+  const handleShareCode = () => {
+    console.log("Novo evento");
+    navigation.navigate("ShareCode");
+  };
+
+  const handleEditVehicle = () => {
+    console.log("Edit veiculo");
+  };
+
   const handleDetailsEvent = (eventId: number) => {
     console.log("Novo evento", eventId);
     navigation.navigate("timelineEvent", {
@@ -110,7 +119,10 @@ const Dashboard = ({ route, navigation }: any) => {
         <View style={{ marginTop: 0, alignItems: "center", flex: 1 }}>
           <View style={styles.headerContainer}>
             <View style={styles.configurationView}>
-              <TouchableOpacity style={styles.headerBtn}>
+              <TouchableOpacity
+                style={styles.headerBtn}
+                onPress={handleEditVehicle}
+              >
                 <AntDesign
                   name="edit"
                   size={18}
@@ -119,7 +131,10 @@ const Dashboard = ({ route, navigation }: any) => {
                 />
                 <Text style={{ color: "#353036" }}>Editar Veículo</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.headerBtn}>
+              <TouchableOpacity
+                style={styles.headerBtn}
+                onPress={handleShareCode}
+              >
                 <Text style={{ color: "#353036" }}>Compartilhar</Text>
                 <AntDesign
                   name="sharealt"
