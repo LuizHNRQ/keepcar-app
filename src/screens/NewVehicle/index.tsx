@@ -212,8 +212,8 @@ const NewVehicle = ({ route, navigation }: any) => {
   }, [brandSelected]);
 
   return (
-    <SafeAreaView>
-      <ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
         <TouchableWithoutFeedback
           style={{ flex: 1 }}
           //onPress={() => setListOpen(false)}
@@ -386,13 +386,14 @@ const NewVehicle = ({ route, navigation }: any) => {
               />
             </View>
 
+            <Text style={styles.label}>Imagem</Text>
             {!!!image.uri && (
               <TouchableOpacity
                 style={{ ...styles.button, backgroundColor: "orange" }}
                 onPress={onHandlePickImage}
               >
                 <FontAwesome name="file-photo-o" size={24} color="black" />
-                <Text style={{ marginLeft: 10 }}>Adicionar Arquivo</Text>
+                <Text style={{ marginLeft: 10 }}>Adicionar Imagem</Text>
               </TouchableOpacity>
             )}
 
@@ -406,7 +407,7 @@ const NewVehicle = ({ route, navigation }: any) => {
                 </View>
                 <View style={styles.textOuter}>
                   <TouchableOpacity
-                    style={{ ...styles.button }}
+                    style={{ ...styles.buttonIMG }}
                     onPress={onHandlePickImage}
                   >
                     <MaterialCommunityIcons
@@ -414,7 +415,7 @@ const NewVehicle = ({ route, navigation }: any) => {
                       size={28}
                       color="black"
                     />
-                    <Text style={{ marginLeft: 10 }}>Alterar Arquivo</Text>
+                    <Text style={{ marginLeft: 10 }}>Alterar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -456,17 +457,29 @@ const styles = StyleSheet.create({
     backgroundColor: "purple",
     marginTop: 20,
   },
+  buttonIMG: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 12,
+    borderRadius: 5,
+    //width: "75%",
+    backgroundColor: "orange",
+    //marginTop: 20,
+  },
   label: {
     alignSelf: "flex-start",
     //margin: 20,
     marginTop: 15,
     //marginLeft: "10%",
-    fontSize: 20,
+    fontSize: 18,
+    marginBottom: 4,
   },
   input: {
     backgroundColor: "white",
     height: 50,
-    padding: 10,
+    paddingVertical: 10,
+    paddingLeft: 4,
     borderRadius: 4,
     // width: "80%",
     borderColor: "white",
@@ -475,7 +488,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     flex: 1,
-    width: "75%",
+    //width: "75%",
     padding: 5,
     borderColor: "grey",
     borderWidth: 2,
@@ -488,14 +501,15 @@ const styles = StyleSheet.create({
   textOuter: {
     flex: 3,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     flexDirection: "row",
+    marginRight: 4,
   },
-  img: { width: 80, height: 80, resizeMode: "cover" },
+  img: { width: 140, height: 100, resizeMode: "cover" },
   //posterior
   container: {
     flex: 1,
-    backgroundColor: "lightblue",
+    //backgroundColor: "lightblue",
     width: "90%",
     alignSelf: "center",
   },
