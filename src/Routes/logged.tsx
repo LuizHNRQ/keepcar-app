@@ -44,7 +44,7 @@ const Logged: React.FC = () => {
         <HomeStack.Screen
           name="NewVehicle"
           options={{
-            title: "Veículo",
+            title: "Novo veículo",
           }}
           component={NewVehicle}
         />

@@ -218,10 +218,9 @@ const NewVehicle = ({ route, navigation }: any) => {
           style={{ flex: 1 }}
           //onPress={() => setListOpen(false)}
         >
-          <View style={{ flex: 1 }}>
-            <Text>New vehicles 123</Text>
+          <View style={styles.container}>
             <View>
-              <Text style={styles.label}>Company</Text>
+              <Text style={styles.label}>Montadora</Text>
               <Controller
                 name="makerId"
                 control={control}
@@ -240,12 +239,12 @@ const NewVehicle = ({ route, navigation }: any) => {
                       setValue={setBrandSelected}
                       items={brands}
                       setItems={setBrands}
-                      placeholder="Select Company"
+                      placeholder="Seleciona a montadora"
                       placeholderStyle={styles.placeholderStyles}
                       loading={loadingBrand}
                       activityIndicatorColor="#5188E3"
                       searchable={true}
-                      searchPlaceholder="Search your company here..."
+                      searchPlaceholder="Pesquise por montadora aqui..."
                       onOpen={onBrandOpen}
                       onChangeValue={onChange}
                       listMode="SCROLLVIEW"
@@ -254,7 +253,7 @@ const NewVehicle = ({ route, navigation }: any) => {
                 )}
               />
             </View>
-            <View>
+            <View style={{ display: brandSelected ? "flex" : "none" }}>
               <Text style={styles.label}>Modelo</Text>
               <Controller
                 name="modelId"
@@ -289,7 +288,7 @@ const NewVehicle = ({ route, navigation }: any) => {
                 )}
               />
             </View>
-            <View>
+            <View style={{ display: brandSelected ? "flex" : "none" }}>
               <Text style={styles.label}>Ano</Text>
               <Controller
                 name="year"
@@ -437,8 +436,8 @@ const NewVehicle = ({ route, navigation }: any) => {
 
 const styles = StyleSheet.create({
   dropdownCompany: {
-    marginHorizontal: 10,
-    marginBottom: 15,
+    //marginHorizontal: 10,
+    //marginBottom: 15,
   },
   dropdown: {
     borderColor: "#B7B7B7",
@@ -453,14 +452,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 12,
     borderRadius: 5,
-    width: "75%",
+    //width: "75%",
     backgroundColor: "purple",
     marginTop: 20,
   },
   label: {
     alignSelf: "flex-start",
-    margin: 20,
-    marginLeft: "10%",
+    //margin: 20,
+    marginTop: 15,
+    //marginLeft: "10%",
     fontSize: 20,
   },
   input: {
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
     borderRadius: 4,
-    width: "80%",
+    // width: "80%",
     borderColor: "white",
   },
   imageContainer: {
@@ -492,6 +492,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   img: { width: 80, height: 80, resizeMode: "cover" },
+  //posterior
+  container: {
+    flex: 1,
+    backgroundColor: "lightblue",
+    width: "90%",
+    alignSelf: "center",
+  },
 });
 
 export default NewVehicle;
