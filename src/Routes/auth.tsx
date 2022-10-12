@@ -6,6 +6,7 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
+import VehicleShow from "../screens/VehicleVisualization";
 
 // import { Container } from './styles';
 
@@ -34,7 +35,15 @@ const Auth = (): JSX.Element => {
       <Stack.Screen
         name="KeepCarId"
         component={KeepCar}
-        options={{ title: "Visualizar veículo" }}
+        options={{ title: "Visualizar veículo", headerShown: true }}
+      />
+      <Stack.Screen
+        name="VehicleShow"
+        options={{
+          title: "Detalhes",
+          headerShown: true,
+        }}
+        component={VehicleShow}
       />
     </Stack.Navigator>
   );

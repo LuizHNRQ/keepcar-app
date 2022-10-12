@@ -7,16 +7,48 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useAuth } from "../../contexts/auth";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { fetchByKeepCarId } from "../../requests/share";
 
 // import { Container } from './styles';
 
 const KeepCar = ({ navigation }: any) => {
   const { user } = useAuth();
-  const [keepId, setKeepId] = useState("");
+  const [keepId, setKeepId] = useState("6NH9UW");
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async () => {
+    console.log("kepCard id->", keepId?.toUpperCase());
+
+    try {
+      setLoading(true);
+      await setTimeout(async () => {
+        const { vehicleId } = await fetchByKeepCarId(keepId?.toUpperCase());
+
+        console.log("res11->", vehicleId);
+
+        if (vehicleId) {
+          navigation.navigate("VehicleShow", {
+            vehicleId,
+          });
+        }
+
+        setLoading(false);
+      }, 3000);
+    } catch (error) {
+      setLoading(false);
+      console.log("erro do try 2344", error);
+    }
+  };
+
+  function wait<T>(ms: number, value: T) {
+    return new Promise<T>((resolve) => setTimeout(resolve, ms, value));
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -46,16 +78,20 @@ const KeepCar = ({ navigation }: any) => {
             padding: 12,
             borderRadius: 5,
           }}
-          onPress={() => {}}
+          onPress={handleSearch}
         >
           <Text style={{ marginRight: 10, color: "black", fontSize: 18 }}>
-            Pesquisar veículo
+            {loading ? "Pesquisando " : "Pesquisar veículo"}
           </Text>
-          <MaterialCommunityIcons
-            name="text-box-search-outline"
-            size={24}
-            color="black"
-          />
+          {loading ? (
+            <ActivityIndicator size="small" color="black" />
+          ) : (
+            <MaterialCommunityIcons
+              name="text-box-search-outline"
+              size={24}
+              color="black"
+            />
+          )}
         </TouchableOpacity>
 
         {!!!user && (

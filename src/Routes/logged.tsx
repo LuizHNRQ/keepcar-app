@@ -10,6 +10,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import Dashboard from "../screens/dashboard";
 import Garage from "../screens/Garage";
 import Vehicle from "../screens/Vehicle";
+import VehicleShow from "../screens/VehicleVisualization";
 import NewVehicle from "../screens/NewVehicle";
 import ShareCode from "../screens/ShareCode";
 import EditVehicle from "../screens/EditVehicle";
@@ -41,6 +42,13 @@ const Logged: React.FC = () => {
             title: "Detalhes",
           }}
           component={Vehicle}
+        />
+        <HomeStack.Screen
+          name="VehicleShow"
+          options={{
+            title: "Detalhes",
+          }}
+          component={VehicleShow}
         />
         <HomeStack.Screen
           name="NewVehicle"

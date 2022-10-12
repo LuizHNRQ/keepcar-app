@@ -13,8 +13,8 @@ const Profile: React.FC = () => {
         style={{ ...styles.button, backgroundColor: "#c43d3d" }}
         onPress={signOut}
       >
-        <Text style={{ marginRight: 10 }}>Deslogar</Text>
-        <MaterialIcons name="logout" size={24} color="black" />
+        <Text style={{ marginRight: 10, color: "white" }}>Deslogar</Text>
+        <MaterialIcons name="logout" size={24} color="white" />
       </TouchableOpacity>
       {/* <Text>Profile Screen</Text> */}
       {/* <Button title="sair" onPress={signOut}></Button> */}

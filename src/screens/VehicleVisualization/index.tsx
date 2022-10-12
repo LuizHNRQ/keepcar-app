@@ -1,87 +1,56 @@
-import useAxios from "axios-hooks";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
-  FlatList,
   StyleSheet,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
-import { Events, fetchDetails } from "../../requests/events";
-import { useAuth } from "../../contexts/auth";
-import { apiUrl } from "../../requests";
 import { EventRecord, Vehicle } from "../../contexts/vehicles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import dayjs from "dayjs";
 
 import { Entypo } from "@expo/vector-icons";
 
-type CustomVehicle = {
-  id: string;
-  maker: string;
-  model: string;
-  year: string;
-  plate: string;
-  updatedAt: string;
-  eventsCount: number;
-  lastEvent: string;
-};
-
-type ApiResponse = {
-  vehicles: CustomVehicle[];
-  events: Events[];
-};
+import dayjs from "dayjs";
+import { Events, fetchEventsByVehicleId } from "../../requests/events";
 
 type Data = {
-  event: Events;
+  event: EventRecord;
 };
 
 const Dashboard = ({ route, navigation }: any) => {
-  const { user } = useAuth();
+  const { vehicleId } = route?.params;
 
-  const [vehicles, setVehicles] = useState<CustomVehicle[]>(null);
+  const [vehicleData, setVehicleData] = useState<Vehicle>(null);
   const [events, setEvents] = useState<Events[]>(null);
 
-  const fetchDataFromApi = async () => {
-    try {
-      const res = await fetchDetails(user?.id.toString());
+  const fetchVehicleData = async () => {
+    const data = await fetchEventsByVehicleId(vehicleId);
 
-      setVehicles(res.vehicles);
-      setEvents(res?.events?.slice(0, 5));
-    } catch (error) {
-      console.log("error 5939239", error);
+    if (data) {
+      setVehicleData(data.vehicle);
+      setEvents(data.events);
     }
   };
 
+  const handleViewVehicleImage = () => {
+    console.log("imagem do veiculo");
+  };
+
   const handleDetailsEvent = (eventId: number) => {
-    console.log("Editar evento 123", eventId);
+    console.log("Editar evento", eventId);
     navigation.navigate("timelineEvent", {
       eventId: eventId,
     });
   };
-
-  useEffect(() => {
-    fetchDataFromApi();
-  }, []);
 
   const TimelineEvent = ({ event }: Data) => {
     return (
       <View style={styles.eventContainer}>
         <View style={styles.eventHeaderContainer}>
           <Text style={[styles.eventTextHeader, { fontWeight: "bold" }]}>
-            {`${vehicles.find((ve) => ve.id === event.vehicleId).maker} - ${
-              vehicles.find((ve) => ve.id === event.vehicleId).model.length > 15
-                ? `${vehicles
-                    .find((ve) => ve.id === event.vehicleId)
-                    .model.toLowerCase()
-                    .substring(0, 10)}...`
-                : vehicles
-                    .find((ve) => ve.id === event.vehicleId)
-                    .model.toLowerCase()
-            }`}
+            {event.km + " km"}
           </Text>
           <View
             style={{
@@ -123,85 +92,66 @@ const Dashboard = ({ route, navigation }: any) => {
     );
   };
 
+  useEffect(() => {
+    if (vehicleId) {
+      fetchVehicleData();
+    }
+  }, [route]);
+
   return (
-    <View style={{ flex: 1 }}>
-      {/* <View style={styles.garageview}> */}
+    <View style={styles.container}>
+      {!vehicleData ? (
+        <Text>carregando....</Text>
+      ) : (
+        <View style={{ marginTop: 0, alignItems: "center", flex: 1 }}>
+          <View style={styles.headerContainer}>
+            <View style={styles.vehicleHeader}>
+              <Text style={styles.header} numberOfLines={2}>
+                {`${vehicleData.maker.toUpperCase()} ${vehicleData.model.toUpperCase()}`}
+              </Text>
+            </View>
+            <Text style={styles.subHeader}>
+              {vehicleData.plate.toUpperCase()}
+            </Text>
 
-      <Text style={styles.description}>Garagem de {user.name}</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleViewVehicleImage}
+            >
+              <MaterialIcons name="photo-library" size={24} color="white" />
+              <Text style={{ marginLeft: 10, color: "white" }}>
+                Ver imagens do veiculo
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 10,
-            marginHorizontal: 9,
-            borderBottomColor: "black",
-            borderBottomWidth: 1,
-          }}
-        >
-          <Text>Veículo cadastrados</Text>
-          <Text>Ultimo registro</Text>
-        </View> */}
-      {/* <Text>Garagem</Text> */}
-      {/* <View>
-          <FlatList
-            style={{ maxHeight: 160, marginTop: 10 }}
-            data={vehicles}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  borderBottomColor: "grey",
-                  borderBottomWidth: 1,
-                  marginBottom: 5,
-                  marginHorizontal: 9,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text>{item.maker}</Text>
-                  <Text>{item.model}</Text>
-                </View>
-                <View>
-                  <Text>
-                    {item.lastEvent
-                      ? dayjs(item.lastEvent).format("DD/MM/YYYY")
-                      : "não inserido"}
-                  </Text>
-                </View>
-              </View>
-            )}
-            keyExtractor={(item, index) => `${item.id}${index}`}
-          />
-        </View> */}
-      {/* </View> */}
-
-      <Text style={styles.description2}>Ultimos 5 Eventos cadastrados</Text>
-      <View style={styles.cardContainer}>
-        <FlatList
-          data={events}
-          renderItem={({ item }) => (
-            <>
-              <TimelineEvent event={item} key={item.id} />
-              {item.id !== events[events.length - 1].id && (
-                <View style={styles.arrowConatainer}>
-                  <FontAwesome
-                    name="long-arrow-down"
-                    size={24}
-                    color="#353036"
-                  />
-                </View>
+          <Text style={styles.timelimeTitle}>
+            {events?.length === 0
+              ? "Adicione eventos para visualizar aqui"
+              : "Linha do tempo"}
+          </Text>
+          <View style={styles.cardContainer}>
+            <FlatList
+              data={events}
+              renderItem={({ item }) => (
+                <>
+                  <TimelineEvent event={item} key={item.id} />
+                  {item.id !== events[events.length - 1].id && (
+                    <View style={styles.arrowConatainer}>
+                      <FontAwesome
+                        name="long-arrow-down"
+                        size={24}
+                        color="#353036"
+                      />
+                    </View>
+                  )}
+                </>
               )}
-            </>
-          )}
-          keyExtractor={(item, index) => `${item.id}${index}`}
-        />
-      </View>
+              keyExtractor={(item, index) => `${item.id}${index}`}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -333,27 +283,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
-  //GARAGE
-  garageview: {
-    flex: 1.6,
-    //backgroundColor: "lightblue",
-    width: "92%",
-    alignSelf: "center",
-    borderWidth: 1,
-    borderColor: "grey",
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  description: {
-    textAlign: "center",
-    fontSize: 22,
-    marginVertical: 10,
-    fontWeight: "bold",
-  },
-  description2: {
-    textAlign: "center",
-    fontSize: 18,
-  },
 });
+
 export default Dashboard;
