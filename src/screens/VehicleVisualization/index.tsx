@@ -114,7 +114,7 @@ const Dashboard = ({ route, navigation }: any) => {
               {vehicleData.plate.toUpperCase()}
             </Text>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.button}
               onPress={handleViewVehicleImage}
             >
@@ -122,7 +122,7 @@ const Dashboard = ({ route, navigation }: any) => {
               <Text style={{ marginLeft: 10, color: "white" }}>
                 Ver imagens do veiculo
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <Text style={styles.timelimeTitle}>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   headerContainer: {
-    flex: 1.2,
+    flex: 0.8,
     //ackgroundColor: "lightblue",
     width: "100%",
     alignItems: "center",

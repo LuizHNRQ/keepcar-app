@@ -59,6 +59,7 @@ const Dashboard = ({ route, navigation }: any) => {
     console.log("Editar evento", eventId);
     navigation.navigate("timelineEvent", {
       eventId: eventId,
+      enableEdit: true,
     });
   };
 

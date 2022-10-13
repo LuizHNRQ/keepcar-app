@@ -51,7 +51,7 @@ type ImageType = {
 };
 
 const TimeLineEvent = ({ route, navigation }: any) => {
-  const { eventId, vehicleId } = route?.params || {};
+  const { eventId, vehicleId, enableEdit } = route?.params || {};
   const { fetchVehicles } = useVehicle();
   const [editMode, setEditMode] = useState(false);
   const [listOpen, setListOpen] = useState(false);
@@ -343,30 +343,42 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       </View>
                     </View>
                   </View>
-                  <View style={{ flex: 1, marginTop: 90, width: "100%" }}>
-                    <TouchableOpacity
-                      style={styles.imgEdit}
-                      onPress={() => {
-                        console.log("EVDT->", eventDetails);
-
-                        setEditMode(false);
-                        setValue("description", eventDetails.description);
-                        setValue("km", eventDetails.km.toString());
-                        setValue(
-                          "eventType",
-                          eventDetails.eventTypeId.toString()
-                        );
-                        setValue("title", eventDetails.title);
-                        setValue("eventDate", new Date(eventDetails.date));
-                        setImage({ ...image, uri: editImg });
-                      }}
-                    >
-                      <FontAwesome name="edit" size={24} color="white" />
-                      <Text style={{ marginLeft: 10, color: "white" }}>
-                        Editar Registro
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                  {enableEdit ? (
+                    <View style={{ flex: 1, marginTop: 90, width: "100%" }}>
+                      <TouchableOpacity
+                        style={styles.imgEdit}
+                        onPress={() => {
+                          setEditMode(false);
+                          setValue("description", eventDetails.description);
+                          setValue("km", eventDetails.km.toString());
+                          setValue(
+                            "eventType",
+                            eventDetails.eventTypeId.toString()
+                          );
+                          setValue("title", eventDetails.title);
+                          setValue("eventDate", new Date(eventDetails.date));
+                          setImage({ ...image, uri: editImg });
+                        }}
+                      >
+                        <FontAwesome name="edit" size={24} color="white" />
+                        <Text style={{ marginLeft: 10, color: "white" }}>
+                          Editar Registro
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View style={{ flex: 1, marginTop: 90, width: "100%" }}>
+                      <TouchableOpacity
+                        style={{ ...styles.imgEdit, backgroundColor: "orange" }}
+                        onPress={() => navigation.goBack()}
+                      >
+                        {/* <FontAwesome name="edit" size={24} color="black" /> */}
+                        <Text style={{ marginLeft: 10, color: "black" }}>
+                          Voltar
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               ) : (
                 <>
