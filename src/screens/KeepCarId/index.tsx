@@ -14,41 +14,57 @@ import { useAuth } from "../../contexts/auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { fetchByKeepCarId } from "../../requests/share";
+import { Controller, useForm } from "react-hook-form";
 
-// import { Container } from './styles';
+type FormEventData = {
+  keepCardId: string;
+};
 
 const KeepCar = ({ navigation }: any) => {
   const { user } = useAuth();
-  const [keepId, setKeepId] = useState("6NH9UW");
+  //const [keepId, setKeepId] = useState("6NH9UW");
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = async () => {
-    console.log("kepCard id->", keepId?.toUpperCase());
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<FormEventData>({
+    defaultValues: {
+      keepCardId: "6NH9UW",
+    },
+  });
 
+  const onSubmit = async (data: FormEventData) => {
     try {
       setLoading(true);
       await setTimeout(async () => {
-        const { vehicleId } = await fetchByKeepCarId(keepId?.toUpperCase());
+        const { vehicleId } = await fetchByKeepCarId(
+          data.keepCardId.toUpperCase()
+        );
 
-        console.log("res11->", vehicleId);
+        console.log("res22->", vehicleId);
+        setLoading(false);
 
         if (vehicleId) {
           navigation.navigate("VehicleShow", {
             vehicleId,
           });
+        } else {
+          setError("keepCardId", {
+            type: "custom",
+            message: "KeepCarId inválido",
+          });
         }
-
-        setLoading(false);
       }, 3000);
     } catch (error) {
+      console.log("caiu no erro");
       setLoading(false);
-      console.log("erro do try 2344", error);
+      console.log("erru 344", error);
     }
   };
-
-  function wait<T>(ms: number, value: T) {
-    return new Promise<T>((resolve) => setTimeout(resolve, ms, value));
-  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -61,12 +77,36 @@ const KeepCar = ({ navigation }: any) => {
         }}
       >
         <Text style={styles.label}>KeepCarId</Text>
-
-        <TextInput
-          style={styles.input}
-          onChangeText={setKeepId}
-          value={keepId}
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value.toUpperCase()}
+            />
+          )}
+          name="keepCardId"
+          rules={{
+            required: {
+              value: true,
+              message: "Informe o KeepCarId para pesquisar",
+            },
+            minLength: {
+              value: 6,
+              message: "O KeepCarId deve conter 6 dígitos",
+            },
+            maxLength: {
+              value: 6,
+              message: "O KeepCarId deve conter 6 dígitos",
+            },
+          }}
         />
+        {errors["keepCardId"]?.message ? (
+          <Text style={styles.errorText}>{errors["keepCardId"]?.message}</Text>
+        ) : null}
+
         <TouchableOpacity
           style={{
             width: "100%",
@@ -78,7 +118,7 @@ const KeepCar = ({ navigation }: any) => {
             padding: 12,
             borderRadius: 5,
           }}
-          onPress={handleSearch}
+          onPress={handleSubmit(onSubmit)}
         >
           <Text style={{ marginRight: 10, color: "black", fontSize: 18 }}>
             {loading ? "Pesquisando " : "Pesquisar veículo"}
@@ -179,6 +219,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 0,
     fontSize: 18,
+  },
+  errorText: {
+    color: "red",
+
+    marginBottom: 10,
   },
 });
 

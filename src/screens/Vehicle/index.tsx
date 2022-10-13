@@ -43,7 +43,9 @@ const Dashboard = ({ route, navigation }: any) => {
   };
 
   const handleShareCode = () => {
-    navigation.navigate("ShareCode");
+    navigation.navigate("ShareCode", {
+      vehicleId: vehicleId,
+    });
   };
 
   const handleEditVehicle = () => {
