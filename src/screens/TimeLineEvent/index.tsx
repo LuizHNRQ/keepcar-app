@@ -29,6 +29,7 @@ import {
 } from "../../requests/events";
 import { CommonActions } from "@react-navigation/native";
 import { useVehicle } from "../../contexts/vehicles";
+import { TextInputMask } from "react-native-masked-text";
 
 type FormEventData = {
   description: string;
@@ -51,7 +52,7 @@ type ImageType = {
 };
 
 const TimeLineEvent = ({ route, navigation }: any) => {
-  const { eventId, vehicleId, enableEdit } = route?.params || {};
+  const { eventId, vehicleId, enableEdit, allEvents } = route?.params || {};
   const { fetchVehicles } = useVehicle();
   const [editMode, setEditMode] = useState(false);
   const [listOpen, setListOpen] = useState(false);
@@ -72,6 +73,9 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       setSelectEventType(events);
     }
   };
+
+  const lastReportedKm = Number(allEvents?.[0]?.km) || 0;
+  const lastReporteDate = allEvents?.[0]?.date || "2000-10-10T15:14:00.000Z";
 
   const showEventDetails = async (eventId: string) => {
     const details = await showEventDetailsById(eventId);
@@ -116,9 +120,18 @@ const TimeLineEvent = ({ route, navigation }: any) => {
   });
 
   const onSubmit = async (data: FormEventData) => {
+    console.log("enviado->", {
+      ...data,
+      vehicleId,
+      km: data.km?.replace(/\D/g, ""),
+      eventDate: dayjs(data.eventDate).toISOString(),
+      ...(image?.filename && { picture: image as any }),
+    });
+
     await createEvent({
       ...data,
       vehicleId,
+      km: data.km?.replace(/\D/g, ""),
       eventDate: dayjs(data.eventDate).toISOString(),
       ...(image?.filename && { picture: image as any }),
     });
@@ -392,6 +405,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       <RNDateTimePicker
                         locale="pt-BR"
                         maximumDate={new Date()}
+                        minimumDate={lastReporteDate}
                         style={styles.datepicker}
                         onChange={(date) => {
                           onChange(new Date(date.nativeEvent.timestamp!));
@@ -399,7 +413,26 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                         value={value}
                       />
                     )}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Insira a data para o registro.",
+                      },
+                      validate: {
+                        required: (value) => {
+                          if (dayjs(value).isBefore(lastReporteDate))
+                            return `Evento não segue a cronologia (${dayjs(
+                              lastReporteDate
+                            ).format("DD/MM/YYYY")})`;
+                        },
+                      },
+                    }}
                   />
+                  {errors["eventDate"]?.message ? (
+                    <Text style={styles.errorText}>
+                      {errors["eventDate"]?.message}
+                    </Text>
+                  ) : null}
                   <Text style={styles.label}>Tipo</Text>
                   <Controller
                     control={control}
@@ -466,14 +499,18 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                   <Controller
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
+                      <TextInputMask
                         style={{ ...styles.input }}
-                        onBlur={onBlur}
-                        onChangeText={(value) =>
-                          onChange(value.replace(/[^0-9]/g, ""))
-                        }
+                        type={"money"}
+                        options={{
+                          precision: 0,
+                          separator: ",",
+                          delimiter: ".",
+                          unit: "",
+                          suffixUnit: "",
+                        }}
+                        onChangeText={onChange}
                         value={value}
-                        keyboardType="number-pad"
                       />
                     )}
                     name="km"
@@ -481,6 +518,12 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       required: {
                         value: true,
                         message: "Insira o km para o registro.",
+                      },
+                      validate: {
+                        required: (value) => {
+                          if (Number(value.replace(/\D/g, "")) < lastReportedKm)
+                            return `Km inferior ao último reportado (${lastReportedKm}km)`;
+                        },
                       },
                     }}
                   />
@@ -503,8 +546,18 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                       />
                     )}
                     name="description"
-                    //rules={{ required: true }}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Insira o descrição para o registro.",
+                      },
+                    }}
                   />
+                  {errors["description"]?.message ? (
+                    <Text style={styles.errorText}>
+                      {errors["description"]?.message}
+                    </Text>
+                  ) : null}
                   <Text style={styles.label}>Arquivos</Text>
                   {!!!image.uri && (
                     <TouchableOpacity
@@ -611,7 +664,9 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    marginTop: 20,
+    marginTop: 10,
+    alignSelf: "flex-start",
+    marginLeft: "10%",
   },
   header: {
     fontSize: 30,

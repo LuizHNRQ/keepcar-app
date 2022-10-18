@@ -39,6 +39,7 @@ const Dashboard = ({ route, navigation }: any) => {
   const handleNewEvent = () => {
     navigation.navigate("timelineEvent", {
       vehicleId: vehicleId,
+      allEvents: events,
     });
   };
 

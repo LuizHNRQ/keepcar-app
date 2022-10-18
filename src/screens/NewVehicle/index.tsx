@@ -378,26 +378,6 @@ const NewVehicle = ({ route, navigation }: any) => {
                     onChangeText={onChange}
                     value={value}
                   />
-                  // <TextInput
-                  //   style={{ ...styles.input }}
-                  //   onBlur={onBlur}
-                  //   onChangeText={(text) => {
-                  //     console.log("text->", text);
-
-                  //     let value = text;
-
-                  //     if (isNaN(Number(text))) {
-                  //       value = "0";
-                  //     }
-
-                  //     value = new Intl.NumberFormat("pt-BR").format(
-                  //       Number(text)
-                  //     );
-
-                  //     onChange(value);
-                  //   }}
-                  //   value={value}
-                  // />
                 )}
                 name="km"
                 //rules={{ required: true }}
