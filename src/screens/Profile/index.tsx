@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
   StyleSheet,
   Image,
@@ -172,7 +171,7 @@ const Profile: React.FC = () => {
               <Feather name="edit" size={24} color="white" />
             )}
           </TouchableOpacity>
-          {isEditing && (
+          {isEditing ? (
             <TouchableOpacity
               style={{ ...styles.button, backgroundColor: "lightgrey" }}
               onPress={() => setIsEditing(false)}
@@ -180,14 +179,15 @@ const Profile: React.FC = () => {
               <Text style={{ marginRight: 10, color: "black" }}>Cancelar</Text>
               <MaterialCommunityIcons name="cancel" size={24} color="black" />
             </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{ ...styles.button, backgroundColor: "#c43d3d" }}
+              onPress={signOut}
+            >
+              <Text style={{ marginRight: 10, color: "white" }}>Deslogar</Text>
+              <MaterialIcons name="logout" size={24} color="white" />
+            </TouchableOpacity>
           )}
-          <TouchableOpacity
-            style={{ ...styles.button, backgroundColor: "#c43d3d" }}
-            onPress={signOut}
-          >
-            <Text style={{ marginRight: 10, color: "white" }}>Deslogar</Text>
-            <MaterialIcons name="logout" size={24} color="white" />
-          </TouchableOpacity>
         </View>
       </View>
     </View>

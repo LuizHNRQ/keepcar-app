@@ -21,6 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { postVehicle, postVehicleWithImage } from "../../requests/vehicles";
+import { TextInputMask } from "react-native-masked-text";
 
 type FormEventData = {
   makerId: string;
@@ -160,7 +161,7 @@ const NewVehicle = ({ route, navigation }: any) => {
       year: data.year.substring(0, 4),
       plate: data.plate,
       color: "Branco",
-      km: data.km,
+      km: data.km?.replace(/\D/g, ""),
       purchaseYear: data.purchaseYear,
       userId: 1,
       makerId: data.makerId.toString(),
@@ -326,11 +327,14 @@ const NewVehicle = ({ route, navigation }: any) => {
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
+                  <TextInputMask
+                    type={"custom"}
                     style={{ ...styles.input }}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
+                    options={{
+                      mask: "AAA-9S99",
+                    }}
                     value={value}
+                    onChangeText={(text) => onChange(text?.toUpperCase())}
                   />
                 )}
                 name="plate"
@@ -342,9 +346,12 @@ const NewVehicle = ({ route, navigation }: any) => {
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
+                  <TextInputMask
                     style={{ ...styles.input }}
-                    onBlur={onBlur}
+                    type={"datetime"}
+                    options={{
+                      format: "YYYY",
+                    }}
                     onChangeText={onChange}
                     value={value}
                   />
@@ -358,12 +365,39 @@ const NewVehicle = ({ route, navigation }: any) => {
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
+                  <TextInputMask
                     style={{ ...styles.input }}
-                    onBlur={onBlur}
+                    type={"money"}
+                    options={{
+                      precision: 0,
+                      separator: ",",
+                      delimiter: ".",
+                      unit: "",
+                      suffixUnit: "",
+                    }}
                     onChangeText={onChange}
                     value={value}
                   />
+                  // <TextInput
+                  //   style={{ ...styles.input }}
+                  //   onBlur={onBlur}
+                  //   onChangeText={(text) => {
+                  //     console.log("text->", text);
+
+                  //     let value = text;
+
+                  //     if (isNaN(Number(text))) {
+                  //       value = "0";
+                  //     }
+
+                  //     value = new Intl.NumberFormat("pt-BR").format(
+                  //       Number(text)
+                  //     );
+
+                  //     onChange(value);
+                  //   }}
+                  //   value={value}
+                  // />
                 )}
                 name="km"
                 //rules={{ required: true }}
@@ -446,6 +480,7 @@ const styles = StyleSheet.create({
   },
   placeholderStyles: {
     color: "grey",
+    fontSize: 16,
   },
   button: {
     flexDirection: "row",
@@ -483,6 +518,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     // width: "80%",
     borderColor: "white",
+    fontSize: 18,
   },
   imageContainer: {
     flexDirection: "row",
