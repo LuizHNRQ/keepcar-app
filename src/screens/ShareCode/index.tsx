@@ -8,14 +8,23 @@ import {
   TextInput,
   ActivityIndicator,
   Share,
+  FlatList,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { FontAwesome } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import DropDownPicker from "react-native-dropdown-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { postKeepCarId } from "../../requests/share";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  ActiveKeysResponse,
+  fetchActiveKeepKeys,
+  postKeepCarId,
+  unshareKeepCarId,
+} from "../../requests/share";
 import dayjs from "dayjs";
+import { useEffect } from "react";
+import { Alert } from "react-native";
 
 type ItemOption = { label: string; value: string };
 
@@ -28,7 +37,10 @@ const ShareCode = ({ route, navigation }: any) => {
   const [brandOpen, setBrandOpen] = useState(false);
   const [brandSelected, setBrandSelected] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingActive, setLoadingActive] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
+  const [lastKeepCarIds, setLastKeepCarIds] =
+    useState<ActiveKeysResponse[]>(null);
 
   const [brands, setBrands] = useState<ItemOption[]>([
     { label: "1 dia", value: "1" },
@@ -50,6 +62,48 @@ const ShareCode = ({ route, navigation }: any) => {
   const onBrandOpen = useCallback(() => {
     console.log("abriu");
   }, []);
+
+  const handleGetKeys = async (vehicleId) => {
+    try {
+      const { data } = await fetchActiveKeepKeys(vehicleId);
+
+      setLastKeepCarIds(data);
+    } catch (error) {
+      console.log("erro 342->", error);
+    }
+  };
+
+  const handleDeleteShare = (keepCarId: string) => {
+    Alert.alert(
+      "Excluir compartilhamento",
+      "Este keepCarId tornará expirado, impossibilanto novas consultas",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        { text: "Excluir", onPress: () => removeShare(keepCarId) },
+      ]
+    );
+  };
+
+  const removeShare = async (keepCarId) => {
+    setLoadingActive(true);
+    try {
+      await unshareKeepCarId(keepCarId);
+      await handleGetKeys(vehicleId);
+    } catch (error) {
+      console.log("e24324_>", error);
+    } finally {
+      setLoadingActive(false);
+    }
+  };
+
+  useEffect(() => {
+    if (vehicleId) {
+      handleGetKeys(vehicleId);
+    }
+  }, [vehicleId]);
 
   const onShare = async () => {
     try {
@@ -207,6 +261,59 @@ const ShareCode = ({ route, navigation }: any) => {
                   />
                 )}
               </TouchableOpacity>
+
+              <View
+                style={{
+                  marginVertical: 0,
+                  marginHorizontal: 0,
+                }}
+              >
+                {lastKeepCarIds?.length > 0 && (
+                  <Text style={styles.label}>Compartilhamento ativos</Text>
+                )}
+
+                <FlatList
+                  data={lastKeepCarIds}
+                  refreshing={loadingActive}
+                  onRefresh={() => {}}
+                  renderItem={({ item }) => (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginVertical: 5,
+                        justifyContent: "space-between",
+                        backgroundColor: "white",
+                        padding: 5,
+                        borderColor: "orange",
+                        borderWidth: 2,
+                        borderRadius: 5,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginVertical: 5,
+                          justifyContent: "space-between",
+                          width: "90%",
+                        }}
+                      >
+                        <Text>{item.id}</Text>
+                        <Text>{dayjs(item.expiresAt).format("DD/MM")}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => handleDeleteShare(item.id)}
+                      >
+                        <MaterialIcons
+                          name="cancel-presentation"
+                          size={24}
+                          color="red"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  keyExtractor={(item, index) => `${item.id}${index}`}
+                />
+              </View>
             </View>
           ) : (
             <View>

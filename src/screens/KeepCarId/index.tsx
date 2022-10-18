@@ -38,12 +38,12 @@ const KeepCar = ({ navigation }: any) => {
   });
 
   const onSubmit = async (data: FormEventData) => {
-    try {
-      setLoading(true);
-      await setTimeout(async () => {
-        const { vehicleId } = await fetchByKeepCarId(
-          data.keepCardId.toUpperCase()
-        );
+    setLoading(true);
+    setTimeout(async () => {
+      try {
+        const {
+          data: { vehicleId },
+        } = await fetchByKeepCarId(data.keepCardId.toUpperCase());
 
         console.log("res22->", vehicleId);
         setLoading(false);
@@ -52,18 +52,16 @@ const KeepCar = ({ navigation }: any) => {
           navigation.navigate("VehicleShow", {
             vehicleId,
           });
-        } else {
-          setError("keepCardId", {
-            type: "custom",
-            message: "KeepCarId inválido",
-          });
         }
-      }, 3000);
-    } catch (error) {
-      console.log("caiu no erro");
-      setLoading(false);
-      console.log("erru 344", error);
-    }
+      } catch (error) {
+        setLoading(false);
+
+        setError("keepCardId", {
+          type: "custom",
+          message: error?.response?.data?.message,
+        });
+      }
+    }, 3000);
   };
 
   return (

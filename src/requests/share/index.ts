@@ -1,17 +1,7 @@
 import { api } from "..";
 
 export const fetchByKeepCarId = async (keepcarId: string) => {
-  try {
-    const { data } = await api.get<{ vehicleId: string }>(
-      `/share/${keepcarId}`,
-      { timeout: 1000 * 5 }
-    );
-
-    return data;
-  } catch (error) {
-    console.log("error 55543", error.response);
-    return error;
-  }
+  return await api.get<{ vehicleId: string }>(`/share/${keepcarId}`);
 };
 
 type keepCarResponse = {
@@ -33,4 +23,18 @@ export const postKeepCarId = async (vehicle: KeepCarData) => {
     console.log("error 100939", error);
     return error;
   }
+};
+
+export type ActiveKeysResponse = {
+  id: string;
+  vehicleId: string;
+  expiresAt: string;
+};
+
+export const fetchActiveKeepKeys = async (vehicleId: string) => {
+  return await api.get<ActiveKeysResponse[]>(`/shared/${vehicleId}`);
+};
+
+export const unshareKeepCarId = async (keepCarId: KeepCarData) => {
+  return await api.put(`/unshare/${keepCarId}`);
 };
