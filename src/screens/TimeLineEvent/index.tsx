@@ -37,6 +37,7 @@ type FormEventData = {
   eventDate: Date;
   title: string;
   km: string;
+  price: string;
 };
 
 type EventRecord = {
@@ -116,17 +117,13 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       eventDate: new Date(),
       title: "",
       km: "",
+      price: "",
     },
   });
 
   const onSubmit = async (data: FormEventData) => {
-    console.log("enviado->", {
-      ...data,
-      vehicleId,
-      km: data.km?.replace(/\D/g, ""),
-      eventDate: dayjs(data.eventDate).toISOString(),
-      ...(image?.filename && { picture: image as any }),
-    });
+    console.log("data cru->", data.price);
+    console.log("data remmovido->", data.price.replace(/\D/g, ""));
 
     await createEvent({
       ...data,
@@ -134,6 +131,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
       km: data.km?.replace(/\D/g, ""),
       eventDate: dayjs(data.eventDate).toISOString(),
       ...(image?.filename && { picture: image as any }),
+      price: data.price.replace(/\D/g, ""),
     });
 
     await fetchVehicles();
@@ -254,6 +252,15 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                               (event) => event.id === eventDetails.eventTypeId
                             ).title
                           }
+                        </Text>
+                      </View>
+                      <View style={styles.lineDetails}>
+                        <Text style={styles.titleEdit}>Custo:</Text>
+                        <Text style={styles.textEdit}>
+                          {(eventDetails.price / 100).toLocaleString("pt-br", {
+                            style: "currency",
+                            currency: "BRL",
+                          }) || "não cadastrado"}
                         </Text>
                       </View>
                       <View
@@ -421,14 +428,14 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                         value: true,
                         message: "Insira a data para o registro.",
                       },
-                      validate: {
-                        required: (value) => {
-                          if (dayjs(value).isBefore(lastReporteDate))
-                            return `Evento não segue a cronologia (${dayjs(
-                              lastReporteDate
-                            ).format("DD/MM/YYYY")})`;
-                        },
-                      },
+                      // validate: {
+                      //   required: (value) => {
+                      //     if (dayjs(value).isBefore(lastReporteDate))
+                      //       return `Evento não segue a cronologia (${dayjs(
+                      //         lastReporteDate
+                      //       ).format("DD/MM/YYYY")})`;
+                      //   },
+                      // },
                     }}
                   />
                   {errors["eventDate"]?.message ? (
@@ -489,7 +496,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                     rules={{
                       required: {
                         value: true,
-                        message: "Insira o titúlo para o registro.",
+                        message: "Insira o título para o registro.",
                       },
                     }}
                   />
@@ -522,17 +529,48 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                         value: true,
                         message: "Insira o km para o registro.",
                       },
-                      validate: {
-                        required: (value) => {
-                          if (Number(value.replace(/\D/g, "")) < lastReportedKm)
-                            return `Km inferior ao último reportado (${lastReportedKm}km)`;
-                        },
-                      },
+                      // validate: {
+                      //   required: (value) => {
+                      //     if (Number(value.replace(/\D/g, "")) < lastReportedKm)
+                      //       return `Km inferior ao último reportado (${lastReportedKm}km)`;
+                      //   },
+                      // },
                     }}
                   />
                   {errors["km"]?.message ? (
                     <Text style={styles.errorText}>
                       {errors["km"]?.message}
+                    </Text>
+                  ) : null}
+                  <Text style={styles.label}>Custo</Text>
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInputMask
+                        style={{ ...styles.input }}
+                        type={"money"}
+                        options={{
+                          precision: 2,
+                          separator: ",",
+                          delimiter: ".",
+                          unit: "R$",
+                          suffixUnit: "",
+                        }}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    )}
+                    name="price"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Insira o custo do registro.",
+                      },
+                    }}
+                  />
+                  {errors["price"]?.message ? (
+                    <Text style={styles.errorText}>
+                      {errors["price"]?.message}
                     </Text>
                   ) : null}
                   <Text style={styles.label}>Descrição</Text>

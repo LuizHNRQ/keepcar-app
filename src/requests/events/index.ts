@@ -10,6 +10,7 @@ type EventValues = {
   title: string;
   km: string;
   vehicleId: string;
+  price: string;
 };
 
 type ImageType = {
@@ -28,6 +29,7 @@ export const createEvent = async (values: EventValues) => {
     form.append("eventTypeId", values.eventType);
     form.append("km", values.km);
     form.append("date", values.eventDate);
+    form.append("price", values.price);
     form.append("vehicleId", values.vehicleId);
 
     const { data } = await api.post<EventValues, AxiosResponse<any>>(
@@ -58,6 +60,7 @@ export type Events = {
   updatedAt: string;
   vehicleId: string;
   eventTypeId: number;
+  price?: number;
 };
 
 export const fetchEventsByVehicleId = async (vehicleId: string) => {

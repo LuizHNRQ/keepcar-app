@@ -31,6 +31,7 @@ type FormEventData = {
   purchaseYear: string;
   km: string;
   nickname: string;
+  color: string;
 };
 
 type ApiResponse = {
@@ -166,7 +167,7 @@ const NewVehicle = ({ route, navigation }: any) => {
       model: models.find((m) => m.value === data.modelId).label,
       year: data.year.substring(0, 4),
       plate: data.plate,
-      color: "Branco",
+      color: data.color,
       km: data.km?.replace(/\D/g, ""),
       purchaseYear: data.purchaseYear,
       userId: 1,
@@ -204,6 +205,7 @@ const NewVehicle = ({ route, navigation }: any) => {
       purchaseYear: "",
       km: "",
       nickname: "",
+      color: "",
     },
   });
 
@@ -387,6 +389,22 @@ const NewVehicle = ({ route, navigation }: any) => {
                 )}
                 name="km"
                 //rules={{ required: true }}
+              />
+            </View>
+            <View>
+              <Text style={styles.label}>Cor</Text>
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{ ...styles.input }}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="color"
+                rules={{ required: true }}
               />
             </View>
             <View>
