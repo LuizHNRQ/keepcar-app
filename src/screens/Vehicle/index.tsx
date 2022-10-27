@@ -149,6 +149,7 @@ const Dashboard = ({ route, navigation }: any) => {
                 style={{
                   ...styles.card2,
                 }}
+                onPress={handleEditVehicle}
               >
                 <View style={styles.interior2}>
                   <AntDesign
@@ -164,6 +165,7 @@ const Dashboard = ({ route, navigation }: any) => {
                 style={{
                   ...styles.card2,
                 }}
+                onPress={handleReport}
               >
                 <View style={styles.interior2}>
                   <AntDesign
@@ -179,6 +181,7 @@ const Dashboard = ({ route, navigation }: any) => {
                 style={{
                   ...styles.card2,
                 }}
+                onPress={handleShareCode}
               >
                 <View style={styles.interior2}>
                   <AntDesign
@@ -195,6 +198,7 @@ const Dashboard = ({ route, navigation }: any) => {
                   ...styles.card2,
                   backgroundColor: "purple",
                 }}
+                onPress={handleNewEvent}
               >
                 <View style={styles.interior2}>
                   <MaterialIcons
