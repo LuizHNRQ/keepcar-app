@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
           <TouchableOpacity
             style={{
               ...styles.button,
-              backgroundColor: isEditing ? "#4c7844" : "orange",
+              backgroundColor: isEditing ? "#4c7844" : "#e67220",
             }}
             onPress={isEditing ? handleSubmit(onSubmit) : handleEditProfile}
           >

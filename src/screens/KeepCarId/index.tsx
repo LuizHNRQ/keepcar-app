@@ -108,7 +108,7 @@ const KeepCar = ({ navigation }: any) => {
         <TouchableOpacity
           style={{
             width: "100%",
-            backgroundColor: "orange",
+            backgroundColor: "#e67220",
             flexDirection: "row",
             alignItems: "center",
             marginVertical: 5,

@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const data = await auth.signIn(values);
 
     if (!data) {
-      return Alert.alert("ERRO", "deu erro");
+      return Alert.alert("Falha na autenticação", "Falha ao realizar o login");
     }
 
     const userFormated: User = {

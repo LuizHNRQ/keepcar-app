@@ -50,7 +50,7 @@ const Login = ({ navigation }: any): JSX.Element => {
             marginVertical: 40,
             alignSelf: "center",
             fontSize: 68,
-            color: "purple",
+            color: "#6a3b96",
           }}
         >
           KeepCar
@@ -101,7 +101,7 @@ const Login = ({ navigation }: any): JSX.Element => {
             ...styles.button2,
             marginTop: 10,
             // backgroundColor: "#de722f",
-            backgroundColor: "orange",
+            backgroundColor: "#e67220",
           }}
           onPress={() => navigation.navigate("KeepCarId")}
           disabled={loading}
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     // backgroundColor: "white",
-    backgroundColor: "purple",
+    backgroundColor: "#6a3b96",
     justifyContent: "center",
     padding: 10,
     borderRadius: 5,

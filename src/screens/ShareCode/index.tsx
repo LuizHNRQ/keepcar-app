@@ -76,7 +76,7 @@ const ShareCode = ({ route, navigation }: any) => {
   const handleDeleteShare = (keepCarId: string) => {
     Alert.alert(
       "Excluir compartilhamento",
-      "Este keepCarId tornará expirado, impossibilanto novas consultas",
+      "Este keepCarId tornará expirado, impossibitando novas consultas",
       [
         {
           text: "Cancelar",
@@ -237,7 +237,7 @@ const ShareCode = ({ route, navigation }: any) => {
               <TouchableOpacity
                 style={{
                   width: "100%",
-                  backgroundColor: "orange",
+                  backgroundColor: "#e67220",
                   flexDirection: "row",
                   alignItems: "center",
                   marginVertical: 5,
@@ -284,7 +284,7 @@ const ShareCode = ({ route, navigation }: any) => {
                         justifyContent: "space-between",
                         backgroundColor: "white",
                         padding: 5,
-                        borderColor: "orange",
+                        borderColor: "#e67220",
                         borderWidth: 2,
                         borderRadius: 5,
                       }}
@@ -328,7 +328,7 @@ const ShareCode = ({ route, navigation }: any) => {
                     borderTopLeftRadius: 5,
                     borderBottomLeftRadius: 5,
                     borderWidth: 4,
-                    borderColor: "orange",
+                    borderColor: "#e67220",
                     paddingLeft: 4,
                     color: "black",
                   }}
@@ -338,7 +338,7 @@ const ShareCode = ({ route, navigation }: any) => {
                 ></TextInput>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: "orange",
+                    backgroundColor: "#e67220",
                     width: "20%",
                     alignItems: "center",
                     justifyContent: "center",

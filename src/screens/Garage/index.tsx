@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     //backgroundColor: "#171614",
   },
   searchContainer: {
-    backgroundColor: "#d4defa",
+    //backgroundColor: "#d4defa",
     flexDirection: "row",
     height: "12%",
     alignItems: "center",
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "purple",
+    backgroundColor: "#6a3b96",
     justifyContent: "center",
     padding: 10,
     borderRadius: 5,
@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 100,
     height: 100,
+    borderRadius: 5,
     // resizeMode: "contain",
   },
   title: {
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     //backgroundColor: "pink",
-    backgroundColor: "#f5cdf7",
+    //backgroundColor: "#f5cdf7",
     borderRadius: 5,
   },
 });

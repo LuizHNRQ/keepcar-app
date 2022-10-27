@@ -382,7 +382,10 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                   ) : (
                     <View style={{ flex: 1, marginTop: 90, width: "100%" }}>
                       <TouchableOpacity
-                        style={{ ...styles.imgEdit, backgroundColor: "orange" }}
+                        style={{
+                          ...styles.imgEdit,
+                          backgroundColor: "#e67220",
+                        }}
                         onPress={() => navigation.goBack()}
                       >
                         {/* <FontAwesome name="edit" size={24} color="black" /> */}
@@ -450,7 +453,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                           setValue={(item) => onChange(item(item.name))}
                           dropDownContainerStyle={{
                             //backgroundColor: "grey",
-                            borderColor: "purple",
+                            borderColor: "#6a3b96",
                             width: "80%",
                             marginLeft: 40,
                           }}
@@ -561,7 +564,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                   <Text style={styles.label}>Arquivos</Text>
                   {!!!image.uri && (
                     <TouchableOpacity
-                      style={{ ...styles.button, backgroundColor: "orange" }}
+                      style={{ ...styles.button, backgroundColor: "#e67220" }}
                       onPress={onHandlePickImage}
                     >
                       <FontAwesome
@@ -604,7 +607,7 @@ const TimeLineEvent = ({ route, navigation }: any) => {
                   <TouchableOpacity
                     style={{
                       ...styles.button,
-                      backgroundColor: "purple",
+                      backgroundColor: "#6a3b96",
                       marginTop: 20,
                     }}
                     onPress={handleSubmit(onSubmit)}
@@ -739,7 +742,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 12,
     borderRadius: 5,
-    backgroundColor: "purple",
+    backgroundColor: "#6a3b96",
     marginTop: 20,
   },
   textEdit: {

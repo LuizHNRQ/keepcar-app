@@ -148,11 +148,13 @@ const Profile = ({ route, navigation }: RouteParams) => {
 
         {!!!editImg?.uri && (
           <TouchableOpacity
-            style={{ ...styles.button, backgroundColor: "orange" }}
+            style={{ ...styles.button, backgroundColor: "#e67220" }}
             onPress={onHandlePickImage}
           >
-            <FontAwesome name="file-photo-o" size={24} color="black" />
-            <Text style={{ marginLeft: 10 }}>Adicionar Imagem</Text>
+            <FontAwesome name="file-photo-o" size={24} color="white" />
+            <Text style={{ marginLeft: 10, color: "white" }}>
+              Adicionar Imagem
+            </Text>
           </TouchableOpacity>
         )}
         {editImg?.uri && (
@@ -209,7 +211,7 @@ const Profile = ({ route, navigation }: RouteParams) => {
         <TouchableOpacity
           style={{
             ...styles.button,
-            backgroundColor: "purple",
+            backgroundColor: "#6a3b96",
             marginTop: 20,
           }}
           onPress={handleSubmit}
