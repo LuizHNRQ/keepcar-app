@@ -30,6 +30,7 @@ export interface Vehicle {
   plate: string;
   color: string;
   km: number;
+  initialKm: number;
   purchaseYear: string;
   createdAt: string;
   updatedAt: string;

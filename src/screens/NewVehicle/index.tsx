@@ -96,8 +96,14 @@ const NewVehicle = ({ route, navigation }: any) => {
 
   const fetchModels = async () => {
     const { data } = await getModels();
-    setModels(data.modelos.map((b) => ({ label: b.nome, value: b.codigo })));
-    setYears(data.anos.map((b) => ({ label: b.nome, value: b.codigo })));
+
+    const years = data?.anos?.map((b) => ({
+      label: b.nome.replace(/\D/g, ""),
+      value: b.codigo,
+    }));
+
+    setModels(data?.modelos.map((b) => ({ label: b.nome, value: b.codigo })));
+    setYears(years?.filter((option) => Number(option.label) < 2030));
   };
 
   const onBrandOpen = useCallback(() => {

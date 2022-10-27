@@ -61,7 +61,10 @@ const Dashboard: React.FC = ({ navigation }: any) => {
           )}
 
           <Text style={styles.title}>{vehicle.plate.toUpperCase()}</Text>
-          <Text>Eventos cadastrados: {vehicle?.events?.length}</Text>
+          <Text>
+            Km: {vehicle?.km.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+          </Text>
+          <Text>Eventos: {vehicle?.events?.length}</Text>
         </View>
         <View style={styles.fowardButtonView}>
           <TouchableOpacity
