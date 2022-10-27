@@ -127,79 +127,86 @@ const Dashboard = ({ route, navigation }: any) => {
         <Text>carregando....</Text>
       ) : (
         <View style={{ marginTop: 0, alignItems: "center", flex: 1 }}>
-          <View style={styles.headerContainer}>
-            <View style={styles.configurationView}>
-              <TouchableOpacity
-                style={styles.headerBtn}
-                onPress={handleEditVehicle}
+          <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+            <View style={{ marginVertical: 10 }}>
+              <Text
+                style={{ width: "100%", fontSize: 20, fontWeight: "bold" }}
+                numberOfLines={1}
               >
-                <AntDesign
-                  name="edit"
-                  size={18}
-                  color="#353036"
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ color: "#353036" }}>Editar Veículo</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.headerBtn}
-                onPress={handleShareCode}
-              >
-                <Text style={{ color: "#353036" }}>Compartilhar</Text>
-                <AntDesign
-                  name="sharealt"
-                  size={18}
-                  color="#353036"
-                  style={{ marginLeft: 10 }}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.vehicleHeader}>
-              <Text style={styles.header} numberOfLines={1}>
-                {`${vehicleData.maker.toUpperCase()} ${vehicleData.model.toUpperCase()}`}
+                {vehicleData.nickname
+                  ? `${vehicleData.nickname.toUpperCase()}`
+                  : `${vehicleData.maker.toUpperCase()}`}
               </Text>
             </View>
-            <Text style={styles.subHeader}>
-              {vehicleData.plate.toUpperCase()}
-            </Text>
-
             <View
               style={{
+                width: "100%",
                 flexDirection: "row",
-                width: "90%",
-                justifyContent: "space-between",
-                marginBottom: 10,
+                justifyContent: "space-evenly",
               }}
             >
               <TouchableOpacity
                 style={{
-                  ...styles.button,
-                  width: "35%",
-                  backgroundColor: "#ec5990",
+                  ...styles.card2,
                 }}
-                onPress={handleReport}
               >
-                <AntDesign name="copy1" size={20} color="white" />
-                <Text style={{ marginLeft: 10, color: "white" }}>
-                  Relatorio
-                </Text>
+                <View style={styles.interior2}>
+                  <AntDesign
+                    name="edit"
+                    size={24}
+                    color="white"
+                    style={{ marginBottom: 10 }}
+                  />
+                  <Text style={{ color: "white" }}>Editar</Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{ ...styles.button, width: "62%" }}
-                onPress={handleNewEvent}
+                style={{
+                  ...styles.card2,
+                }}
               >
-                <MaterialIcons name="add-circle" size={20} color="white" />
-                <Text style={{ marginLeft: 10, color: "white" }}>
-                  Adicionar Evento
-                </Text>
+                <View style={styles.interior2}>
+                  <AntDesign
+                    name="copy1"
+                    size={24}
+                    color="white"
+                    style={{ marginBottom: 10 }}
+                  />
+                  <Text style={{ color: "white" }}>Relatório</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...styles.card2,
+                }}
+              >
+                <View style={styles.interior2}>
+                  <AntDesign
+                    name="sharealt"
+                    size={24}
+                    color="white"
+                    style={{ marginBottom: 10 }}
+                  />
+                  <Text style={{ color: "white" }}>KeepCarId</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...styles.card2,
+                  backgroundColor: "purple",
+                }}
+              >
+                <View style={styles.interior2}>
+                  <MaterialIcons
+                    name="add-circle"
+                    size={24}
+                    color="white"
+                    style={{ marginBottom: 10 }}
+                  />
+                  <Text style={{ color: "white" }}>Evento</Text>
+                </View>
               </TouchableOpacity>
             </View>
-            {/* <TouchableOpacity style={styles.button} onPress={handleNewEvent}>
-              <MaterialIcons name="add-circle" size={24} color="white" />
-              <Text style={{ marginLeft: 10, color: "white" }}>
-                Adicionar Evento
-              </Text>
-            </TouchableOpacity> */}
           </View>
 
           <Text style={styles.timelimeTitle}>
@@ -270,7 +277,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   headerContainer: {
-    flex: 1.0,
+    // flex: 0.6,
     //ackgroundColor: "lightblue",
     width: "100%",
     alignItems: "center",
@@ -286,7 +293,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     marginVertical: 10,
-    flex: 3,
+    flex: 3.5,
   },
   eventContainer: {
     backgroundColor: "white",
@@ -359,6 +366,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
+  },
+  //extras
+  card2: {
+    backgroundColor: "#ec5990",
+    width: "20%",
+    height: 100,
+    borderRadius: 5,
+  },
+  interior2: {
+    justifyContent: "space-evenly",
+    height: "100%",
+    alignItems: "center",
   },
 });
 
