@@ -49,6 +49,10 @@ const Dashboard = ({ route, navigation }: any) => {
     });
   };
 
+  const handleReport = () => {
+    console.log("gera relatorio");
+  };
+
   const handleEditVehicle = () => {
     navigation.navigate("EditVehicle", {
       vehicleDetails: vehicleData,
@@ -159,12 +163,43 @@ const Dashboard = ({ route, navigation }: any) => {
               {vehicleData.plate.toUpperCase()}
             </Text>
 
-            <TouchableOpacity style={styles.button} onPress={handleNewEvent}>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "90%",
+                justifyContent: "space-between",
+                marginBottom: 10,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  ...styles.button,
+                  width: "35%",
+                  backgroundColor: "#ec5990",
+                }}
+                onPress={handleReport}
+              >
+                <AntDesign name="copy1" size={20} color="white" />
+                <Text style={{ marginLeft: 10, color: "white" }}>
+                  Relatorio
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ ...styles.button, width: "62%" }}
+                onPress={handleNewEvent}
+              >
+                <MaterialIcons name="add-circle" size={20} color="white" />
+                <Text style={{ marginLeft: 10, color: "white" }}>
+                  Adicionar Evento
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {/* <TouchableOpacity style={styles.button} onPress={handleNewEvent}>
               <MaterialIcons name="add-circle" size={24} color="white" />
               <Text style={{ marginLeft: 10, color: "white" }}>
                 Adicionar Evento
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <Text style={styles.timelimeTitle}>
